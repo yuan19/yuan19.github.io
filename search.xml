@@ -1,28 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>ActivityManagerService简析</title>
-    <url>/2020/07/14/ActivityManagerService%E7%AE%80%E6%9E%90/</url>
-    <content><![CDATA[<h2 id="AMS启动"><a href="#AMS启动" class="headerlink" title="AMS启动"></a>AMS启动</h2><p>设备在开机启动时，启动SystemServe时会在startBootstrapServices方法会启动AMS服务</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">       mActivityManagerService = mSystemServiceManager.startService(</span><br><span class="line">               ActivityManagerService.Lifecycle<span class="class">.<span class="keyword">class</span>).<span class="title">getService</span>()</span>;</span><br><span class="line">       mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</span><br><span class="line">       mActivityManagerService.setInstaller(installer);</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>在ActivityManagerService类中的Lifecycle会去新建对象</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Lifecycle</span> <span class="keyword">extends</span> <span class="title">SystemService</span> </span>&#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Lifecycle</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">super</span>(context);</span><br><span class="line">          mService = <span class="keyword">new</span> ActivityManagerService(context);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerService</span><span class="params">(Context systemContext)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//...</span></span><br><span class="line">  	mStackSupervisor = createStackSupervisor();</span><br><span class="line">  	<span class="comment">//...</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="AMS流程"><a href="#AMS流程" class="headerlink" title="AMS流程"></a>AMS流程</h2><p>在开始AMS流程前，先来熟悉一下Activity的周期，周期对应着后面AMS的解析流程<a id="more"></a></p>
-<p><img src="/images/Activity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.jpg" alt=""></p>
-<p>从界面开始执行startActivity时，涉及四个进程</p>
-<p>A进程（启动） — &gt; SystemServer进程   — &gt; Zygote进程  — &gt; B进程（被启动进程）</p>
-<p>下图是AMS调用的简易流程</p>
-<p><img src="/images/AMS%E7%AE%80%E6%98%93%E6%B5%81%E7%A8%8B.jpg" alt=""></p>
-<p>最后给出一个全流程图，AMS还是需要一步一步去断点跑每一个类与方法，这样更能理解AMS</p>
-<p><img src="/images/AMS%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg" alt=""></p>
-]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-  </entry>
-  <entry>
     <title>Android系统启动</title>
     <url>/2020/07/13/Android%E7%B3%BB%E7%BB%9F%E5%90%AF%E5%8A%A8/</url>
     <content><![CDATA[<h2 id="启动流程"><a href="#启动流程" class="headerlink" title="启动流程"></a>启动流程</h2><p>顺序进程： <strong>init进程—-&gt;Zygote进程—-&gt;SystemServer进程—-&gt;App进程</strong></p>
@@ -86,6 +64,28 @@
 <p>调用请求setRequest后，Provider获取数据完成后，会调用LocationProviderBase的reportLocation方法，再调用ILocationProviderManager的onReportLocation回调数据。后续再通过ILocationListener回调至请求app，完成一次请求地理位置数据流程。</p>
 <figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReportLocation</span><span class="params">(Location location)</span> </span>&#123;    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+  </entry>
+  <entry>
+    <title>ActivityManagerService简析</title>
+    <url>/2020/07/14/ActivityManagerService%E7%AE%80%E6%9E%90/</url>
+    <content><![CDATA[<h2 id="AMS启动"><a href="#AMS启动" class="headerlink" title="AMS启动"></a>AMS启动</h2><p>设备在开机启动时，启动SystemServe时会在startBootstrapServices方法会启动AMS服务</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">startBootstrapServices</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">       mActivityManagerService = mSystemServiceManager.startService(</span><br><span class="line">               ActivityManagerService.Lifecycle<span class="class">.<span class="keyword">class</span>).<span class="title">getService</span>()</span>;</span><br><span class="line">       mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</span><br><span class="line">       mActivityManagerService.setInstaller(installer);</span><br><span class="line">	<span class="comment">//...</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在ActivityManagerService类中的Lifecycle会去新建对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"> <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Lifecycle</span> <span class="keyword">extends</span> <span class="title">SystemService</span> </span>&#123;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">      <span class="keyword">private</span> <span class="keyword">final</span> ActivityManagerService mService;</span><br><span class="line">      <span class="function"><span class="keyword">public</span> <span class="title">Lifecycle</span><span class="params">(Context context)</span> </span>&#123;</span><br><span class="line">          <span class="keyword">super</span>(context);</span><br><span class="line">          mService = <span class="keyword">new</span> ActivityManagerService(context);</span><br><span class="line">      &#125;</span><br><span class="line"><span class="comment">//...</span></span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="title">ActivityManagerService</span><span class="params">(Context systemContext)</span> </span>&#123;</span><br><span class="line">  	<span class="comment">//...</span></span><br><span class="line">  	mStackSupervisor = createStackSupervisor();</span><br><span class="line">  	<span class="comment">//...</span></span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="AMS流程"><a href="#AMS流程" class="headerlink" title="AMS流程"></a>AMS流程</h2><p>在开始AMS流程前，先来熟悉一下Activity的周期，周期对应着后面AMS的解析流程<a id="more"></a></p>
+<p><img src="/images/Activity%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.jpg" alt=""></p>
+<p>从界面开始执行startActivity时，涉及四个进程</p>
+<p>A进程（启动） — &gt; SystemServer进程   — &gt; Zygote进程  — &gt; B进程（被启动进程）</p>
+<p>下图是AMS调用的简易流程</p>
+<p><img src="/images/AMS%E7%AE%80%E6%98%93%E6%B5%81%E7%A8%8B.jpg" alt=""></p>
+<p>最后给出一个全流程图，AMS还是需要一步一步去断点跑每一个类与方法，这样更能理解AMS</p>
+<p><img src="/images/AMS%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%9B%BE.jpg" alt=""></p>
 ]]></content>
       <categories>
         <category>Android</category>
