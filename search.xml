@@ -4,6 +4,13 @@
     <title>My New Post</title>
     <url>/2024/09/25/My-New-Post/</url>
     <content><![CDATA[]]></content>
+      <categories>
+        <category>hexo</category>
+      </categories>
+      <tags>
+        <tag>new, new2</tag>
+        <tag>new3</tag>
+      </tags>
   </entry>
   <entry>
     <title>Hello World</title>
