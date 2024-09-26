@@ -1,33 +1,211 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>My New Post</title>
-    <url>/2024/09/25/My-New-Post/</url>
-    <content><![CDATA[]]></content>
+    <title>Android启动流程</title>
+    <url>/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="Android启动流程"><a href="#Android启动流程" class="headerlink" title="Android启动流程"></a>Android启动流程</h1><p><a href="http://aospxref.com/android-14.0.0_r2/xref/">Android源码基于14</a></p>
+<h2 id="一、Android架构"><a href="#一、Android架构" class="headerlink" title="一、Android架构"></a>一、Android架构</h2><img src=":/c2c25bcd60ff48e8989da14c76f37ffb" alt="705472d33f524bd1ab8dcaf7b2e15d8a.png" width="616" height="907">
+
+<h2 id="二、启动流程"><a href="#二、启动流程" class="headerlink" title="二、启动流程"></a>二、启动流程</h2><img src=":/7f92109b9d5f47cf9fa275e320d698fd" alt="image-20240919092238815.png" width="613" height="537">
+
+<ul>
+<li><p>Boot ROM：用于加载并执行Boot Loader。Android 设备上电后，开始执行固化在 CPU芯片里的 Boot ROM 中的预设代码，程序将 Boot Loader 代码加载到 ROM 中。这一步由芯片厂商负责设计和实现。</p>
+</li>
+<li><p>Boot Loader：用于将系统代码加载到 RAM 中。具体功能有：检查 RAM、初始化系统的硬件参数等功能，找到 Linux kernel 的代码，设置启动参数，并最终加载到RAM中。</p>
+</li>
+<li><p>Kernel：Linux 内核开始启动，初始化各种软硬件环境、加载驱动程序、挂载根文件系统、并执行 init 程序，由此开启 Android 的世界。</p>
+</li>
+<li><p>Init：内核初始化完成后，会启动名为init的用户空间进程。init进程是Android系统的第一个用户空间进程，它负责系统的进一步初始化和启动。init进程会读取系统配置文件（例如 init.rc），并根据其中的指令启动系统服务和应用程序。</p>
+  <figure class="highlight text"><table><tr><td class="code"><pre><span class="line">init进程会孵化出ueventd、logd、healthd、installd、adbd、lmkd等用户守护进程；</span><br><span class="line"></span><br><span class="line">init进程还启动servicemanager(binder服务管家)、bootanim(开机动画)等重要服务</span><br><span class="line"></span><br><span class="line">init进程孵化出Zygote进程，Zygote进程是Android系统的第一个Java进程(即虚拟机进程)，Zygote是所有Java进程的父进程，Zygote进程本身是由init进程孵化而来的。</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>Zygote：Zygote 是 Android 系统的启动进程，Zygote 会启动 System Servers。</p>
+</li>
+<li><p>System Servers：是Android系统的核心，负责启动和管理整个Java FrameWork，包含ActivityManagerService， WorkManagerService，PagerManagerService，PowerManagerService等服务。</p>
+</li>
+</ul>
+<h2 id="三、Zygote进程-孵化器进程"><a href="#三、Zygote进程-孵化器进程" class="headerlink" title="三、Zygote进程(孵化器进程)"></a>三、Zygote进程(孵化器进程)</h2><p>init进程通过解析init.rc文件来启动各种服务和进程，包括Zygote</p>
+<h3 id="3-1-init-rc脚本解析"><a href="#3-1-init-rc脚本解析" class="headerlink" title="3.1 init.rc脚本解析"></a>3.1 init.rc脚本解析</h3><p><a href="http://aospxref.com/android-14.0.0_r2/xref/system/core/rootdir/init.rc">init.rc源码地址</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*system/core/rootdir/init.rc*/</span><br><span class="line">import /system/etc/init/hw/init.$&#123;ro.zygote&#125;.rc</span><br><span class="line">...</span><br><span class="line">on late-init</span><br><span class="line">    # Now we can start zygote for devices with file based encryption</span><br><span class="line">    trigger zygote-start // 1. 触发启动zygote</span><br><span class="line">...</span><br><span class="line">on zygote-start &amp;&amp; property:ro.crypto.state=encrypted &amp;&amp; property:ro.crypto.type=file</span><br><span class="line">    wait_for_prop odsign.verification.done 1</span><br><span class="line">    # A/B update verifier that marks a successful boot.</span><br><span class="line">    exec_start update_verifier_nonencrypted</span><br><span class="line">    start statsd</span><br><span class="line">    start netd</span><br><span class="line">    start zygote // 2.启动zygote服务</span><br><span class="line">    start zygote_secondary</span><br><span class="line">...</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><code>$&#123;ro.zygote&#125;</code>的取值有4种，在init.rc的同级目录system&#x2F;core&#x2F;rootdir&#x2F;下，现在普遍使用的是init.zygote64_32.rc</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># service zygote: 定义一个名为zygote的服务</span><br><span class="line"># /system/bin/app_process64： 这是启动Zygote进程的可执行文件</span><br><span class="line"># --start-system-server：Zygote进程启动后需要启动system_server进程，ZygoteInit.java会对参数进行处理</span><br><span class="line">service zygote /system/bin/app_process64 -Xzygote /system/bin --zygote --start-system-server --socket-name=zygote</span><br><span class="line">    class main</span><br><span class="line">    priority -20</span><br><span class="line">    user root</span><br><span class="line">    group root readproc reserved_disk</span><br><span class="line">    socket zygote stream 660 root system    # 创建一个名为zygote的socket，用于其他进程与Zygote进程通信。</span><br><span class="line">    socket usap_pool_primary stream 660 root system</span><br><span class="line">    onrestart exec_background - system system -- /system/bin/vdc volume abort_fuse</span><br><span class="line">    onrestart write /sys/power/state on</span><br><span class="line">    # NOTE: If the wakelock name here is changed, then also</span><br><span class="line">    # update it in SystemSuspend.cpp</span><br><span class="line">    </span><br><span class="line">    #当zygote服务重启时，系统应重启的功能</span><br><span class="line">    onrestart write /sys/power/wake_lock zygote_kwl</span><br><span class="line">    onrestart restart audioserver</span><br><span class="line">    onrestart restart cameraserver</span><br><span class="line">    onrestart restart media</span><br><span class="line">    onrestart restart media.tuner</span><br><span class="line">    onrestart restart netd</span><br><span class="line">    onrestart restart wificond</span><br><span class="line">    task_profiles ProcessCapacityHigh MaxPerformance</span><br><span class="line">    critical window=$&#123;zygote.critical_window.minute:-off&#125; target=zygote-fatal</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-2-启动Zygote进程"><a href="#3-2-启动Zygote进程" class="headerlink" title="3.2 启动Zygote进程"></a>3.2 启动Zygote进程</h3><p>init进程启动后，通过fork和execv来启动Zygote进程，如下简化代码所示：</p>
+<p><a href="http://aospxref.com/android-14.0.0_r2/xref/system/core/init/service.cpp">service.cpp源码</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="function"><span class="type">static</span> <span class="type">bool</span> <span class="title">ExpandArgsAndExecv</span><span class="params">(<span class="type">const</span> std::vector&lt;std::string&gt;&amp; args, <span class="type">bool</span> sigstop)</span> </span>&#123;</span><br><span class="line">    std::vector&lt;std::string&gt; expanded_args;</span><br><span class="line">    std::vector&lt;<span class="type">char</span>*&gt; c_strings;</span><br><span class="line"></span><br><span class="line">    expanded_args.<span class="built_in">resize</span>(args.<span class="built_in">size</span>());</span><br><span class="line">    c_strings.<span class="built_in">push_back</span>(<span class="built_in">const_cast</span>&lt;<span class="type">char</span>*&gt;(args[<span class="number">0</span>].<span class="built_in">data</span>()));</span><br><span class="line">    <span class="keyword">for</span> (std::<span class="type">size_t</span> i = <span class="number">1</span>; i &lt; args.<span class="built_in">size</span>(); ++i) &#123;</span><br><span class="line">        <span class="keyword">auto</span> expanded_arg = <span class="built_in">ExpandProps</span>(args[i]);</span><br><span class="line">        <span class="keyword">if</span> (!expanded_arg.<span class="built_in">ok</span>()) &#123;</span><br><span class="line">            <span class="built_in">LOG</span>(FATAL) &lt;&lt; args[<span class="number">0</span>] &lt;&lt; <span class="string">&quot;: cannot expand arguments&#x27;: &quot;</span> &lt;&lt; expanded_arg.<span class="built_in">error</span>();</span><br><span class="line">        &#125;</span><br><span class="line">        expanded_args[i] = *expanded_arg;</span><br><span class="line">        c_strings.<span class="built_in">push_back</span>(expanded_args[i].<span class="built_in">data</span>());</span><br><span class="line">    &#125;</span><br><span class="line">    c_strings.<span class="built_in">push_back</span>(<span class="literal">nullptr</span>);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (sigstop) &#123;</span><br><span class="line">        <span class="built_in">kill</span>(<span class="built_in">getpid</span>(), SIGSTOP);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 2. c_strings[0]是执行程序路径，即如果启动的是zygote服务时，execve会运行/system/bin/app_process64</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">execv</span>(c_strings[<span class="number">0</span>], c_strings.<span class="built_in">data</span>()) == <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">Service::RunService</span><span class="params">(<span class="type">const</span> std::vector&lt;Descriptor&gt;&amp; descriptors,</span></span></span><br><span class="line"><span class="params"><span class="function">                         InterprocessFifo cgroups_activated, InterprocessFifo setsid_finished)</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="keyword">if</span> (!<span class="built_in">ExpandArgsAndExecv</span>(args_, sigstop_)) &#123;</span><br><span class="line">        <span class="built_in">PLOG</span>(ERROR) &lt;&lt; <span class="string">&quot;cannot execv(&#x27;&quot;</span> &lt;&lt; args_[<span class="number">0</span>]</span><br><span class="line">                    &lt;&lt; <span class="string">&quot;&#x27;). See the &#x27;Debugging init&#x27; section of init&#x27;s README.md for tips&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function">Result&lt;<span class="type">void</span>&gt; <span class="title">Service::Start</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="type">pid_t</span> pid = <span class="number">-1</span>;</span><br><span class="line">    <span class="keyword">if</span> (namespaces_.flags) &#123;</span><br><span class="line">        pid = <span class="built_in">clone</span>(<span class="literal">nullptr</span>, <span class="literal">nullptr</span>, namespaces_.flags | SIGCHLD, <span class="literal">nullptr</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        pid = fork(); <span class="comment">// 1.fork创建service进程（也就是zygote进程）</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="built_in">umask</span>(<span class="number">077</span>);</span><br><span class="line">        cgroups_activated.<span class="built_in">CloseWriteFd</span>();</span><br><span class="line">        setsid_finished.<span class="built_in">CloseReadFd</span>();</span><br><span class="line">        <span class="built_in">RunService</span>(descriptors, std::<span class="built_in">move</span>(cgroups_activated), std::<span class="built_in">move</span>(setsid_finished));</span><br><span class="line">        _exit(<span class="number">127</span>);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        cgroups_activated.<span class="built_in">CloseReadFd</span>();</span><br><span class="line">        setsid_finished.<span class="built_in">CloseWriteFd</span>();</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="3-3-zygote进程"><a href="#3-3-zygote进程" class="headerlink" title="3.3 zygote进程"></a>3.3 zygote进程</h3><h4 id="3-3-1-native层：app-process启动zygote-main"><a href="#3-3-1-native层：app-process启动zygote-main" class="headerlink" title="3.3.1 native层：app_process启动zygote.main"></a>3.3.1 native层：app_process启动zygote.main</h4><p><strong>&#x2F;system&#x2F;bin&#x2F;app_process</strong>是Android中的一个<strong>关键可执行文件</strong>，负责启动Zygote进程和应用进程。</p>
+<p><a href="http://aospxref.com/android-14.0.0_r2/xref/frameworks/base/cmds/app_process/app_main.cpp">app_process源码地址</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">/*frameworks/base/cmds/app_process/app_main.cpp*/</span><br><span class="line">int main(int argc, char* const argv[])</span><br><span class="line">&#123;</span><br><span class="line">    ...</span><br><span class="line">    // Parse runtime arguments.  Stop at first unrecognized option.</span><br><span class="line">    bool zygote = false;</span><br><span class="line">    ...</span><br><span class="line">    while (i &lt; argc) &#123;</span><br><span class="line">        const char* arg = argv[i++];</span><br><span class="line">        if (strcmp(arg, &quot;--zygote&quot;) == 0) &#123;</span><br><span class="line">            zygote = true; // 参数标识启动zygote进程</span><br><span class="line">            niceName = ZYGOTE_NICE_NAME;</span><br><span class="line">        &#125; else if (strcmp(arg, &quot;--start-system-server&quot;) == 0) &#123;</span><br><span class="line">            startSystemServer = true; //参数标识启动system_server进程</span><br><span class="line">        &#125; </span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    if (!niceName.isEmpty()) &#123;</span><br><span class="line">        runtime.setArgv0(niceName.string(), true /* setProcName */); // 进程名app_process修改为zygote</span><br><span class="line">    &#125;</span><br><span class="line">    if (zygote) &#123;</span><br><span class="line">        // 启动Zygote，执行AndroidRuntime.start函数</span><br><span class="line">        runtime.start(&quot;com.android.internal.os.ZygoteInit&quot;, args, zygote); </span><br><span class="line">    &#125; else if (className) &#123;</span><br><span class="line">        runtime.start(&quot;com.android.internal.os.RuntimeInit&quot;, args, zygote);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>我们进一步来看AndroidRuntime的start流程代码：</p>
+<p><a href="https://aospxref.com/android-14.0.0_r2/xref/frameworks/base/core/jni/AndroidRuntime.cpp">AndroidRuntime源码</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*frameworks/base/core/jni/AndroidRuntime.cpp*/</span></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">AndroidRuntime::start</span><span class="params">(<span class="type">const</span> <span class="type">char</span>* className, <span class="type">const</span> Vector&lt;String8&gt;&amp; options, <span class="type">bool</span> zygote)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    ...</span><br><span class="line">    <span class="comment">/* start the virtual machine */</span></span><br><span class="line">    JniInvocation jni_invocation;</span><br><span class="line">    jni_invocation.<span class="built_in">Init</span>(<span class="literal">NULL</span>);</span><br><span class="line">    JNIEnv* env;</span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">startVm</span>(&amp;mJavaVM, &amp;env, zygote, primary_zygote) != <span class="number">0</span>) &#123; <span class="comment">// 1.启动VM虚拟机</span></span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">onVmCreated</span>(env);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">/*</span></span><br><span class="line"><span class="comment">     * Register android functions.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="built_in">startReg</span>(env) &lt; <span class="number">0</span>) &#123; <span class="comment">// 2.注册框架JNI调用到虚拟机中</span></span><br><span class="line">        <span class="built_in">ALOGE</span>(<span class="string">&quot;Unable to register all android natives\n&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">    <span class="type">char</span>* slashClassName = <span class="built_in">toSlashClassName</span>(className != <span class="literal">NULL</span> ? className : <span class="string">&quot;&quot;</span>);</span><br><span class="line">    jclass startClass = env-&gt;<span class="built_in">FindClass</span>(slashClassName);</span><br><span class="line">    <span class="keyword">if</span> (startClass == <span class="literal">NULL</span>) &#123;</span><br><span class="line">        <span class="built_in">ALOGE</span>(<span class="string">&quot;JavaVM unable to locate class &#x27;%s&#x27;\n&quot;</span>, slashClassName);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="comment">// 3.JNI调用进入java层执行ZygoteInit的main函数</span></span><br><span class="line">        jmethodID startMeth = env-&gt;<span class="built_in">GetStaticMethodID</span>(startClass, <span class="string">&quot;main&quot;</span>,</span><br><span class="line">            <span class="string">&quot;([Ljava/lang/String;)V&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (startMeth == <span class="literal">NULL</span>) &#123;</span><br><span class="line">            <span class="built_in">ALOGE</span>(<span class="string">&quot;JavaVM unable to find main() in &#x27;%s&#x27;\n&quot;</span>, className);</span><br><span class="line">            <span class="comment">/* keep going */</span></span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            env-&gt;<span class="built_in">CallStaticVoidMethod</span>(startClass, startMeth, strArray);</span><br><span class="line">            ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>从代码中可以看到AndroidRuntime#start方法中主要完成三件事情：</p>
+<ol>
+<li>启动进程的VM虚拟机；</li>
+<li>注册Android系统框架JNI调用到虚拟机中；</li>
+<li>通过JNI调用进入java层执行ZygoteInit的main函数；</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">AI通义回答：</span><br><span class="line">Q：android 系统启动时 app_process是运行在哪个进程中</span><br><span class="line">A:当app_process被执行时，它实际上是在一个新的进程中运行。这个新进程就是Zygote进程。在Zygote启动的过程中，app_process会根据传递给它的参数来决定其行为。例如，如果带有--zygote标志，那么app_process就会初始化Zygote并开始监听socket连接，等待Activity Manager Service (AMS) 发起的请求以创建新的应用进程。</span><br><span class="line">因此，可以明确地说，在Android系统启动过程中，app_process是运行在Zygote进程中。</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-2-java层：ZyogeInit"><a href="#3-3-2-java层：ZyogeInit" class="headerlink" title="3.3.2 java层：ZyogeInit"></a>3.3.2 java层：ZyogeInit</h4><p>由3.3.1调用执行java层ZygoteInit的main函数</p>
+<p><a href="http://aospxref.com/android-14.0.0_r2/xref/frameworks/base/core/java/com/android/internal/os/ZygoteInit.java#main">ZyogeInit.java源码</a></p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*frameworks/base/core/java/com/android/internal/os/ZygoteInit.java*/</span></span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] argv)</span> &#123;</span><br><span class="line">       <span class="type">ZygoteServer</span> <span class="variable">zygoteServer</span> <span class="operator">=</span> <span class="literal">null</span>;</span><br><span class="line">       ...</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           ...</span><br><span class="line">           <span class="keyword">for</span> (<span class="type">int</span> <span class="variable">i</span> <span class="operator">=</span> <span class="number">1</span>; i &lt; argv.length; i++) &#123;</span><br><span class="line">               <span class="comment">// 在init.rc文件中，有--start-system-server参数，表示要创建SystemServer</span></span><br><span class="line">               <span class="keyword">if</span> (<span class="string">&quot;start-system-server&quot;</span>.equals(argv[i])) &#123;</span><br><span class="line">                   startSystemServer = <span class="literal">true</span>;</span><br><span class="line">               &#125; <span class="keyword">else</span> <span class="keyword">if</span> (<span class="string">&quot;--enable-lazy-preload&quot;</span>.equals(argv[i])) &#123;</span><br><span class="line">                   enableLazyPreload = <span class="literal">true</span>;</span><br><span class="line">               &#125;</span><br><span class="line">           &#125;</span><br><span class="line">           ...</span><br><span class="line">           <span class="keyword">if</span> (!enableLazyPreload) &#123;</span><br><span class="line">               ...</span><br><span class="line">               preload(bootTimingsTraceLog); <span class="comment">// 1.预加载资源</span></span><br><span class="line">               ...</span><br><span class="line">           &#125;</span><br><span class="line">           ...</span><br><span class="line">           zygoteServer = <span class="keyword">new</span> <span class="title class_">ZygoteServer</span>(isPrimaryZygote); <span class="comment">// 2.创建Socket服务端</span></span><br><span class="line">           </span><br><span class="line">           <span class="keyword">if</span> (startSystemServer) &#123;</span><br><span class="line">               <span class="type">Runnable</span> <span class="variable">r</span> <span class="operator">=</span> forkSystemServer(abiList, zygoteSocketName, zygoteServer); <span class="comment">// 3.fork启动system_server进程</span></span><br><span class="line">               ...</span><br><span class="line">           &#125;</span><br><span class="line">           ...</span><br><span class="line">           </span><br><span class="line">           <span class="comment">//4. sokcet服务端等待AMS请求（AMS会通过socket请求Zygote来创建应用程序进程）</span></span><br><span class="line">           caller = zygoteServer.runSelectLoop(abiList);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">           Log.e(TAG, <span class="string">&quot;System zygote died with fatal exception&quot;</span>, ex);</span><br><span class="line">           <span class="keyword">throw</span> ex;</span><br><span class="line">       &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">           <span class="keyword">if</span> (zygoteServer != <span class="literal">null</span>) &#123;</span><br><span class="line">               zygoteServer.closeServerSocket();</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       <span class="comment">// We&#x27;re in the child process and have exited the select loop. Proceed to execute the</span></span><br><span class="line">       <span class="comment">// command.</span></span><br><span class="line">       <span class="keyword">if</span> (caller != <span class="literal">null</span>) &#123;</span><br><span class="line">           caller.run();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">   <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">preload</span><span class="params">(TimingsTraceLog bootTimingsTraceLog)</span> &#123;</span><br><span class="line">       beginPreload();</span><br><span class="line">       preloadClasses(); <span class="comment">// 1.预加载system/etc/preloaded-classes文件中定义的各个系统类</span></span><br><span class="line">       ...</span><br><span class="line">       preloadResources(); <span class="comment">// 2.预加载系统中定义的各个drawables、color资源</span></span><br><span class="line">       ...</span><br><span class="line">       nativePreloadAppProcessHALs(); <span class="comment">// 3.预加载某些硬件抽象层（HAL）模块</span></span><br><span class="line">       ...</span><br><span class="line">       maybePreloadGraphicsDriver(); <span class="comment">// 4.预加载图形驱动程序</span></span><br><span class="line">       ...</span><br><span class="line">       preloadSharedLibraries(); <span class="comment">// 5.预加载一些共享库（shared libraries）</span></span><br><span class="line">       preloadTextResources(); <span class="comment">//6.预加载一些常用的文本资源，如字体、字符串</span></span><br><span class="line">       WebViewFactory.prepareWebViewInZygote();</span><br><span class="line">       endPreload();</span><br><span class="line"></span><br><span class="line">       sPreloadComplete = <span class="literal">true</span>;</span><br><span class="line">   &#125;</span><br><span class="line">   </span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>从代码中可以看到ZygoteInit#main方法中主要fork启动system_server进程：</p>
+<ol>
+<li>zygote进程中预加载类、主题资源、字体资源等</li>
+<li>创建socket服务端，用于跨进程通信；</li>
+<li><strong>fork创建启动系统system_server进程；</strong></li>
+<li>Sokcet服务端进入循环监听等待，等待后续AMS请求（<strong>AMS会通过socket请求Zygote来创建应用程序进程</strong>）。</li>
+</ol>
+<h4 id="3-3-3-system-server进程的启动"><a href="#3-3-3-system-server进程的启动" class="headerlink" title="3.3.3 system_server进程的启动"></a>3.3.3 system_server进程的启动</h4><p>继续分析forkSystemServer</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*frameworks/base/core/java/com/android/internal/os/ZygoteInit.java*/</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Runnable <span class="title function_">forkSystemServer</span><span class="params">(String abiList, String socketName,</span></span><br><span class="line"><span class="params">            ZygoteServer zygoteServer)</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        <span class="type">int</span> pid;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            ...</span><br><span class="line">            <span class="comment">/* Request to fork the system server process */</span></span><br><span class="line">            <span class="comment">// 1.fork创建system_server进程</span></span><br><span class="line">            pid = Zygote.forkSystemServer(</span><br><span class="line">                    parsedArgs.mUid, parsedArgs.mGid,</span><br><span class="line">                    parsedArgs.mGids,</span><br><span class="line">                    parsedArgs.mRuntimeFlags,</span><br><span class="line">                    <span class="literal">null</span>,</span><br><span class="line">                    parsedArgs.mPermittedCapabilities,</span><br><span class="line">                    parsedArgs.mEffectiveCapabilities);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalArgumentException ex) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> <span class="title class_">RuntimeException</span>(ex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/* For child process */</span></span><br><span class="line">        <span class="keyword">if</span> (pid == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (hasSecondZygote(abiList)) &#123;</span><br><span class="line">                waitForSecondaryZygote(socketName);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">// 2.pid为0代表在新创建的system_server进程中，继续通过handleSystemServerProcess进一步处理</span></span><br><span class="line">            zygoteServer.closeServerSocket();</span><br><span class="line">            <span class="keyword">return</span> handleSystemServerProcess(parsedArgs);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> <span class="literal">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Runnable <span class="title function_">handleSystemServerProcess</span><span class="params">(ZygoteArguments parsedArgs)</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> ZygoteInit.zygoteInit(parsedArgs.mTargetSdkVersion,</span><br><span class="line">                    parsedArgs.mDisabledCompatChanges,</span><br><span class="line">                    parsedArgs.mRemainingArgs, cl);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Runnable <span class="title function_">zygoteInit</span><span class="params">(<span class="type">int</span> targetSdkVersion, <span class="type">long</span>[] disabledCompatChanges,</span></span><br><span class="line"><span class="params">            String[] argv, ClassLoader classLoader)</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        RuntimeInit.commonInit();</span><br><span class="line">        <span class="comment">// 1.触发启动进程的Binder线程池 </span></span><br><span class="line">        ZygoteInit.nativeZygoteInit();</span><br><span class="line">        <span class="comment">// 2.通过反射创建&quot;com.android.server.SystemServer&quot;类对象并执行其main函数</span></span><br><span class="line">        <span class="keyword">return</span> RuntimeInit.applicationInit(targetSdkVersion, disabledCompatChanges, argv,</span><br><span class="line">                classLoader);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li>ZygoteInit.nativeZygoteInit()：触发进程Binder线程池，后续Binder再分析。</li>
+<li>RuntimeInit.applicationInit()：反射方式执行SystemServer的main函数</li>
+</ol>
+<p>接下来是SystemServer启动的main方法</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">/*frameworks/base/services/java/com/android/server/SystemServer.java*/</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title function_">main</span><span class="params">(String[] args)</span> &#123;</span><br><span class="line">        <span class="keyword">new</span> <span class="title class_">SystemServer</span>().run();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title function_">run</span><span class="params">()</span> &#123;</span><br><span class="line">   ...</span><br><span class="line">    <span class="comment">// 1.创建主线程Looper</span></span><br><span class="line">    Looper.prepareMainLooper();</span><br><span class="line">    <span class="comment">// 2.创建系统Context上下文</span></span><br><span class="line">    createSystemContext();</span><br><span class="line">    <span class="comment">// 3.创建SystemServiceManager，用于后续系统服务（AMS、WMS等）的创建、启动和生命周期管理</span></span><br><span class="line">    mSystemServiceManager = <span class="keyword">new</span> <span class="title class_">SystemServiceManager</span>(mSystemContext);</span><br><span class="line">    mSystemServiceManager.setStartInfo(mRuntimeRestart, mRuntimeStartElapsedTime, mRuntimeStartUptime);</span><br><span class="line">    LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">    <span class="comment">// 4.服务根据优先级被分成3批来启动：</span></span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        t.traceBegin(<span class="string">&quot;StartServices&quot;</span>);</span><br><span class="line">        <span class="comment">//启动引导服务</span></span><br><span class="line">        startBootstrapServices(t);</span><br><span class="line">        <span class="comment">//启动核心服务</span></span><br><span class="line">        startCoreServices(t);</span><br><span class="line">         <span class="comment">//启动其他服务</span></span><br><span class="line">        startOtherServices(t);</span><br><span class="line">        <span class="comment">//启动 APEX 服务</span></span><br><span class="line">        startApexServices(t);</span><br><span class="line">     &#125; <span class="keyword">catch</span> (Throwable ex) &#123;</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;******************************************&quot;</span>);</span><br><span class="line">        Slog.e(<span class="string">&quot;System&quot;</span>, <span class="string">&quot;************ Failure starting system services&quot;</span>, ex);</span><br><span class="line">        <span class="keyword">throw</span> ex;</span><br><span class="line">     &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">        t.traceEnd(); <span class="comment">// StartServices</span></span><br><span class="line">     &#125;</span><br><span class="line">     <span class="comment">// 5.开启looper循环</span></span><br><span class="line">     Looper.loop();</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="3-4-System-Server启动的主要服务"><a href="#3-4-System-Server启动的主要服务" class="headerlink" title="3.4 System Server启动的主要服务"></a>3.4 System Server启动的主要服务</h3><p>以下为System Server启动的主要服务列表，具体实现可在源码中查看。</p>
+<table>
+<thead>
+<tr>
+<th>服务名称</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Activity Manager Service (AMS)</td>
+<td>管理应用程序的生命周期，包括启动和停止应用、管理任务和活动栈、处理广播等</td>
+</tr>
+<tr>
+<td>Package Manager Service (PMS)</td>
+<td>管理应用包的安装、卸载、更新、权限分配等</td>
+</tr>
+<tr>
+<td>System Config Service</td>
+<td>管理系统配置和资源</td>
+</tr>
+<tr>
+<td>Power Manager Service</td>
+<td>管理设备的电源状态和电源策略，如休眠、唤醒等</td>
+</tr>
+<tr>
+<td>Display Manager Service</td>
+<td>管理显示设备，如屏幕亮度、显示模式等</td>
+</tr>
+<tr>
+<td>User Manager Service</td>
+<td>管理用户账户和用户信息</td>
+</tr>
+<tr>
+<td>Battery Service</td>
+<td>监控和管理电池状态和电池使用情况</td>
+</tr>
+<tr>
+<td>Vibrator Service</td>
+<td>控制设备的振动功能</td>
+</tr>
+<tr>
+<td>Sensor Service</td>
+<td>管理设备的传感器，如加速度计、陀螺仪等</td>
+</tr>
+<tr>
+<td>Window Manager Service (WMS)</td>
+<td>管理窗口和显示内容，包括窗口的创建、删除、布局等</td>
+</tr>
+<tr>
+<td>Input Manager Service</td>
+<td>管理输入设备，如触摸屏、键盘等</td>
+</tr>
+<tr>
+<td>Alarm Manager Service</td>
+<td>提供定时任务调度功能</td>
+</tr>
+<tr>
+<td>Connectivity Service</td>
+<td>管理网络连接，如 Wi-Fi、移动数据等</td>
+</tr>
+<tr>
+<td>Network Management Service</td>
+<td>管理网络接口和网络连接</td>
+</tr>
+<tr>
+<td>Telephony Registry</td>
+<td>管理电话和短信服务</td>
+</tr>
+<tr>
+<td>Input Method Manager Service (IMMS)</td>
+<td>管理输入法框架</td>
+</tr>
+<tr>
+<td>Accessibility Manager Service</td>
+<td>管理无障碍服务，为有特殊需要的用户提供辅助功能</td>
+</tr>
+<tr>
+<td>Mount Service</td>
+<td>管理存储设备的挂载和卸载</td>
+</tr>
+<tr>
+<td>Location Manager Service</td>
+<td>管理位置服务，如 GPS 和网络定位</td>
+</tr>
+<tr>
+<td>Search Manager Service</td>
+<td>管理系统搜索功能</td>
+</tr>
+<tr>
+<td>Clipboard Service</td>
+<td>管理剪贴板功能</td>
+</tr>
+<tr>
+<td>DevicePolicy Manager Service</td>
+<td>管理设备的安全策略和企业管理功能</td>
+</tr>
+<tr>
+<td>Status Bar Service</td>
+<td>管理状态栏显示和操作</td>
+</tr>
+<tr>
+<td>Wallpaper Manager Service</td>
+<td>管理壁纸设置和操作</td>
+</tr>
+<tr>
+<td>Media Router Service</td>
+<td>管理媒体设备路由</td>
+</tr>
+</tbody></table>
+<h2 id="四、总结"><a href="#四、总结" class="headerlink" title="四、总结"></a>四、总结</h2><p>Android系统启动的核心流程如下：</p>
+<ol>
+<li>Linux内核启动</li>
+<li>init进程启动</li>
+<li>init进程fork出Zygote进程</li>
+<li>Zygote进程fork出SystemServer进程</li>
+<li>SystemServer进程启动各项服务（PMS、AMS等）</li>
+<li>AMS服务启动Launcher桌面</li>
+</ol>
+<p><img src="/:/85b3897598cd474b8b6568c0ae626567" alt="93a0c5f6ec004422bacfbdfa59a4f9d1tplv-k3u1fbpfcp-zoom-in-crop-mark1512000-1726732260395-5-1726732261497-7.webp"></p>
+<p>参考文章：</p>
+<p><a href="https://juejin.cn/post/6969141197596000263">Android系统启动流程（基于Android 11）</a></p>
+<p><a href="https://www.cnblogs.com/anywherego/p/18221943">Android启动过程-万字长文(Android14)</a></p>
+<p><a href="http://gityuan.com/android/">http://gityuan.com/android/</a></p>
+<p>TODO：</p>
+<ol>
+<li>可执行文件，与Zygote是同一个进程中吗？要不然，怎么执行相应的文件</li>
+<li>可执行文件与进程的区别</li>
+</ol>
+]]></content>
       <categories>
-        <category>hexo</category>
+        <category>Android</category>
       </categories>
       <tags>
-        <tag>new, new2</tag>
-        <tag>new3</tag>
+        <tag>Android</tag>
+        <tag>framework</tag>
       </tags>
-  </entry>
-  <entry>
-    <title>Hello World</title>
-    <url>/2024/09/25/hello-world/</url>
-    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-]]></content>
   </entry>
 </search>
