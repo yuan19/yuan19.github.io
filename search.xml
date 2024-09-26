@@ -4,8 +4,11 @@
     <title>Android启动流程</title>
     <url>/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="Android启动流程"><a href="#Android启动流程" class="headerlink" title="Android启动流程"></a>Android启动流程</h1><p><a href="http://aospxref.com/android-14.0.0_r2/xref/">Android源码基于14</a></p>
-<h2 id="一、Android架构"><a href="#一、Android架构" class="headerlink" title="一、Android架构"></a>一、Android架构</h2><p><img src="/.io//705472d33f524bd1ab8dcaf7b2e15d8a.png" alt="705472d33f524bd1ab8dcaf7b2e15d8a"></p>
-<h2 id="二、启动流程"><a href="#二、启动流程" class="headerlink" title="二、启动流程"></a>二、启动流程</h2><ul>
+<h2 id="一、Android架构"><a href="#一、Android架构" class="headerlink" title="一、Android架构"></a>一、Android架构</h2><img src="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/705472d33f524bd1ab8dcaf7b2e15d8a.png" class="" title="705472d33f524bd1ab8dcaf7b2e15d8a">
+
+<h2 id="二、启动流程"><a href="#二、启动流程" class="headerlink" title="二、启动流程"></a>二、启动流程</h2><img src="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240919092238815.png" class="" title="image-20240919092238815">
+
+<ul>
 <li><p>Boot ROM：用于加载并执行Boot Loader。Android 设备上电后，开始执行固化在 CPU芯片里的 Boot ROM 中的预设代码，程序将 Boot Loader 代码加载到 ROM 中。这一步由芯片厂商负责设计和实现。</p>
 </li>
 <li><p>Boot Loader：用于将系统代码加载到 RAM 中。具体功能有：检查 RAM、初始化系统的硬件参数等功能，找到 Linux kernel 的代码，设置启动参数，并最终加载到RAM中。</p>
@@ -192,6 +195,8 @@
 <li>SystemServer进程启动各项服务（PMS、AMS等）</li>
 <li>AMS服务启动Launcher桌面</li>
 </ol>
+<img src="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/93a0c5f6ec004422bacfbdfa59a4f9d1tplv-k3u1fbpfcp-zoom-in-crop-mark1512000-1726732260395-5-1726732261497-7.webp" class="" title="93a0c5f6ec004422bacfbdfa59a4f9d1tplv-k3u1fbpfcp-zoom-in-crop-mark1512000-1726732260395-5-1726732261497-7">
+
 <p>参考文章：</p>
 <p><a href="https://juejin.cn/post/6969141197596000263">Android系统启动流程（基于Android 11）</a></p>
 <p><a href="https://www.cnblogs.com/anywherego/p/18221943">Android启动过程-万字长文(Android14)</a></p>
@@ -204,5 +209,10 @@
         <tag>Android</tag>
         <tag>framework</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>wenzhang</title>
+    <url>/2024/09/26/wenzhang/</url>
+    <content><![CDATA[]]></content>
   </entry>
 </search>
