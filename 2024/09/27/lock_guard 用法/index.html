@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
-  <meta name="robots" content="noindex,follow">
+  
   <meta name="generator" content="Hexo 7.3.0">
   <meta http-equiv='x-dns-prefetch-control' content='on' />
   <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
@@ -17,22 +17,25 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
   
-  <title>归档 - yuan19'Blog</title>
+  <title>用法 - yuan19'Blog</title>
 
   
-    <meta name="description" content="随风而行，自在如云">
-<meta property="og:type" content="website">
-<meta property="og:title" content="归档">
-<meta property="og:url" content="https://yuan19.github.io/archives/index.html">
+    <meta name="description" content="std::lock_guard是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。std::lock_guard在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。 以下是std::lock_guard的基本用法： 包含头文件在使用std::lock_guard之前，需要包含互斥锁的头文件： 1#">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用法">
+<meta property="og:url" content="https://yuan19.github.io/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/index.html">
 <meta property="og:site_name" content="yuan19&#39;Blog">
-<meta property="og:description" content="随风而行，自在如云">
+<meta property="og:description" content="std::lock_guard是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。std::lock_guard在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。 以下是std::lock_guard的基本用法： 包含头文件在使用std::lock_guard之前，需要包含互斥锁的头文件： 1#">
 <meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2024-09-27T09:31:06.000Z">
+<meta property="article:modified_time" content="2024-09-27T09:31:55.043Z">
 <meta property="article:author" content="yuan19">
+<meta property="article:tag" content="C&#x2F;C++基础">
 <meta name="twitter:card" content="summary">
   
   
   
-  
+  <meta name="keywords" content="C/C++基础">
 
   <!-- feed -->
   
@@ -53,7 +56,7 @@
 </script>
 
 
-<div class="l_body s:aa index tech" id="start" layout="undefined" ><aside class="l_left"><div class="leftbar-container">
+<div class="l_body s:aa index tech" id="start" layout="std::lock_guard" ><aside class="l_left"><div class="leftbar-container">
 
 
 <header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">yuan19</div><div class="sub normal cap">听听歌，喝喝茶，写写代码</div><div class="sub hover cap" style="opacity:0">随风而行，自在如云</div></a></div></header>
@@ -64,18 +67,76 @@
 
 <nav class="menu dis-select"></nav>
 </div>
-<div class="widgets">
-<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/"><span class="title">用法</span></a><a class="item title" href="/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">C++双冒号::的作用</span></a><a class="item title" href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"><span class="title">Android启动流程</span></a><a class="item title" href="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><span class="title">Binder原理浅析</span></a></div></widget>
-</div>
+<div class="widgets"></div>
 
 </div></aside><div class="l_main" id="main">
 
 <header class="header mobile-only"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">yuan19</div><div class="sub normal cap">听听歌，喝喝茶，写写代码</div><div class="sub hover cap" style="opacity:0">随风而行，自在如云</div></a></div></header>
 
- 
 
 
-<div class="navbar top"><nav class="post"><a href="/">近期发布</a><a href="/categories">分类</a><a href="/tags">标签</a><a class="active" href="/archives">归档</a></nav></div><div class="post-list archives"><article class="" id="archive"><div class='archive-header h4'>2024</div><div class="archive-list"><a class='post fs14' href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/"><time>09-27</time><span>用法</span></a></div><div class="archive-list"><a class='post fs14' href="/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/"><time>09-27</time><span>C++双冒号::的作用</span></a></div><div class="archive-list"><a class='post fs14' href="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><time>09-27</time><span>Binder原理浅析</span></a></div><div class="archive-list"><a class='post fs14' href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"><time>09-26</time><span>Android启动流程</span></a></div></article></div>
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+
+  <span class="sep"></span>
+  <a class="cap breadcrumb" href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/">用法</a>
+  </div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-09-27T09:31:06.000Z">2024-09-27</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-09-27T09:31:55.043Z">2024-09-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>用法</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><p><code>std::lock_guard</code>是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。<code>std::lock_guard</code>在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。</p>
+<p>以下是<code>std::lock_guard</code>的基本用法：</p>
+<h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><p>在使用<code>std::lock_guard</code>之前，需要包含互斥锁的头文件：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用std-lock-guard"><a href="#使用std-lock-guard" class="headerlink" title="使用std::lock_guard"></a>使用<code>std::lock_guard</code></h3><ol>
+<li><strong>创建互斥锁</strong>：<br>首先，你需要有一个<code>std::mutex</code>实例。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">std::mutex mtx;  </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>创建<code>std::lock_guard</code>实例</strong>：<br>当你需要对共享资源进行访问时，创建一个<code>std::lock_guard</code>对象，并将互斥锁的引用传递给它。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line"><span class="comment">// 在这个作用域内，mtx 被锁定  </span></span><br><span class="line"><span class="comment">// 访问共享资源  </span></span><br><span class="line">&#125; <span class="comment">// 作用域结束时，lock_guard 对象被销毁，mtx 被解锁  </span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p><strong>访问共享资源</strong>：<br>在<code>std::lock_guard</code>对象的作用域内，互斥锁被保持锁定状态，你可以安全地访问共享资源。</p>
+</li>
+<li><p><strong>自动解锁</strong>：<br>当离开<code>std::lock_guard</code>对象的作用域时（例如，当作用域的代码块结束时），<code>std::lock_guard</code>对象会被销毁，互斥锁会自动释放。</p>
+</li>
+</ol>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::mutex mtx;  </span><br><span class="line"><span class="type">int</span> shared_data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; ++i) &#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line">++shared_data;  </span><br><span class="line"><span class="comment">// 这里可以安全地修改 shared_data，因为 mtx 已被锁定  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="function">std::thread <span class="title">t1</span><span class="params">(increment)</span></span>;  </span><br><span class="line"><span class="function">std::thread <span class="title">t2</span><span class="params">(increment)</span></span>;</span><br><span class="line"></span><br><span class="line">t<span class="number">1.</span><span class="built_in">join</span>();  </span><br><span class="line">t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; <span class="string">&quot;Final value of shared_data: &quot;</span> &lt;&lt; shared_data &lt;&lt; std::endl;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>在这个示例中，我们有两个线程<code>t1</code>和<code>t2</code>，它们都调用<code>increment</code>函数来递增共享数据<code>shared_data</code>。通过使用<code>std::lock_guard</code>，我们确保每次只有一个线程可以修改<code>shared_data</code>，从而避免了竞态条件。</p>
+<p><code>std::lock_guard</code>是线程安全的，并且它提供了一种异常安全的方式来管理锁，因为它保证在发生异常时锁也会被释放。这使得它成为保护共享资源访问的一个很好的选择。</p>
+</article>
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="yuan19/hexo-comment" data-repo-id="R_kgDOM3XMlg" data-category="Announcements" data-category-id="DIC_kwDOM3XMls4CizNW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
 <!--卜算子统计-->
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
 </script>
@@ -405,6 +466,30 @@
 
 
 <!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, false);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
 
 
 
