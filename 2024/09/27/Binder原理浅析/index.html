@@ -84,7 +84,7 @@
 <div class="widgets">
 
 
-<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/"><span class="title">用法</span></a><a class="item title" href="/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">C++双冒号::的作用</span></a><a class="item title" href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"><span class="title">Android启动流程</span></a><a class="item title" href="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><span class="title">Binder原理浅析</span></a></div></widget>
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/"><span class="title">std::lock_guard 用法</span></a><a class="item title" href="/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/"><span class="title">C++双冒号::的作用</span></a><a class="item title" href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"><span class="title">Android启动流程</span></a><a class="item title" href="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><span class="title">Binder原理浅析</span></a></div></widget>
 </div>
 
 </div></aside><div class="l_main" id="main">
@@ -131,7 +131,7 @@
 <h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
 <li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
 </ul>
-<style>.ddtwbclogysv{zoom:50%;}</style><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="ddtwbclogysv lazy" alt="img">
+<style>.icstanksygjv{zoom:50%;}</style><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="icstanksygjv lazy" alt="img">
 
 <ul>
 <li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
