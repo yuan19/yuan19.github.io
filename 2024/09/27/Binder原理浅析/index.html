@@ -1,0 +1,798 @@
+
+<!DOCTYPE html><html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="hexo-theme" content="https://github.com/xaoxuu/hexo-theme-stellar/tree/1.29.1" theme-name="Stellar" theme-version="1.29.1">
+  
+  <meta name="generator" content="Hexo 7.3.0">
+  <meta http-equiv='x-dns-prefetch-control' content='on' />
+  <link rel="preconnect" href="https://gcore.jsdelivr.net" crossorigin><link rel="preconnect" href="https://unpkg.com" crossorigin><link rel="preconnect" href="https://cdn.bootcdn.net" crossorigin>
+  <meta name="renderer" content="webkit">
+  <meta name="force-rendering" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  <meta name="HandheldFriendly" content="True" >
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
+  <meta name="theme-color" content="#f9fafb">
+  
+  <title>Binder原理浅析 - yuan19'Blog</title>
+
+  
+    <meta name="description" content="Binder原理浅析一、Binder优势   优势 描述    性能 一次数据拷贝，mmap内存映射   稳定性 基于 C&#x2F;S 架构，架构清晰、职责明确   安全性 为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程序通过猜测接收方地址获得连接   二、Binder概要设计2.1、进程隔离 操作系统中，进程与进程间内存是不共享的。两个进程就像两个平行的世界，A 进程没法直接访问">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Binder原理浅析">
+<meta property="og:url" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/index.html">
+<meta property="og:site_name" content="yuan19&#39;Blog">
+<meta property="og:description" content="Binder原理浅析一、Binder优势   优势 描述    性能 一次数据拷贝，mmap内存映射   稳定性 基于 C&#x2F;S 架构，架构清晰、职责明确   安全性 为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程序通过猜测接收方地址获得连接   二、Binder概要设计2.1、进程隔离 操作系统中，进程与进程间内存是不共享的。两个进程就像两个平行的世界，A 进程没法直接访问">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-729b3444cd784d882215a24067893d0e_720w.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-67854cdf14d07a6a4acf9d675354e1ff_720w.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6f1fc5a80tplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e9373ce5tplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e959b77etplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed729e2b6e4tplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed72270d98etplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/5ecf5179cc274c4c8c1e726013ca04d7tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/b648c0439d854405b3189bc6d5079c9ftplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714ed5c901bcca2tplv-t2oaga2asx-jj-mark3024000q75.webp">
+<meta property="og:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/image-20240927165800594.png">
+<meta property="article:published_time" content="2024-09-27T02:52:25.000Z">
+<meta property="article:modified_time" content="2024-09-27T09:02:37.931Z">
+<meta property="article:author" content="yuan19">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="framework">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp">
+  
+  
+  
+  <meta name="keywords" content="Android,framework">
+
+  <!-- feed -->
+  
+
+  <link rel="stylesheet" href="/css/main.css?v=1.29.1">
+
+  
+    <link rel="shortcut icon" href="/assets/icon.svg">
+  
+
+  
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/xaoxuu/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="/assets/xaoxuu/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="/assets/xaoxuu/favicon/favicon-16x16.png"><link rel="manifest" href="/assets/xaoxuu/favicon/site.webmanifest"><link rel="shortcut icon" href="/assets/xaoxuu/favicon/favicon.ico"><meta name="theme-color" content="#f8f8f8"><link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/lxgw-wenkai-screen-webfont/1.7.0/style.min.css" media="all" />
+</head>
+<body>
+<script type="text/javascript"
+  color="220,220,220" opacity='0.7' zIndex="-2" count="200" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js">
+</script>
+
+
+<div class="l_body s:aa content tech" id="start" layout="post" ><aside class="l_left"><div class="leftbar-container">
+
+
+<header class="header"><div class="logo-wrap"><div class="icon"><img no-lazy class="icon" src="/assets/icon.svg" onerror="javascript:this.classList.add('error');this.src='https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/image/2659360.svg';"></div><a class="title" href="/"><div class="main" ff="title">yuan19</div><div class="sub normal cap">听听歌，喝喝茶，写写代码</div><div class="sub hover cap" style="opacity:0">随风而行，自在如云</div></a></div></header>
+
+<div class="nav-area">
+<div class="search-wrapper" id="search-wrapper"><form class="search-form"><a class="search-button" onclick="document.getElementById(&quot;search-input&quot;).focus();"><svg t="1705074644177" viewBox="0 0 1025 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="1560" width="200" height="200"><path d="M1008.839137 935.96571L792.364903 719.491476a56.783488 56.783488 0 0 0-80.152866 0 358.53545 358.53545 0 1 1 100.857314-335.166073 362.840335 362.840335 0 0 1-3.689902 170.145468 51.248635 51.248635 0 1 0 99.217358 26.444296 462.057693 462.057693 0 1 0-158.255785 242.303546l185.930047 185.725053a51.248635 51.248635 0 0 0 72.568068 0 51.248635 51.248635 0 0 0 0-72.978056z" p-id="1561"></path><path d="M616.479587 615.969233a50.428657 50.428657 0 0 0-61.498362-5.534852 174.655348 174.655348 0 0 1-177.525271 3.484907 49.403684 49.403684 0 0 0-58.833433 6.76482l-3.074918 2.869923a49.403684 49.403684 0 0 0 8.609771 78.10292 277.767601 277.767601 0 0 0 286.992355-5.739847 49.403684 49.403684 0 0 0 8.404776-76.667958z" p-id="1562"></path></svg></a><input type="text" class="search-input" id="search-input" placeholder="站内搜索"></form><div id="search-result"></div><div class="search-no-result">没有找到内容！</div></div>
+
+
+<nav class="menu dis-select"></nav>
+</div>
+<div class="widgets">
+
+
+<widget class="widget-wrapper post-list"><div class="widget-header dis-select"><span class="name">最近更新</span></div><div class="widget-body fs14"><a class="item title" href="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><span class="title">Binder原理浅析</span></a><a class="item title" href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"><span class="title">Android启动流程</span></a></div></widget>
+</div>
+
+</div></aside><div class="l_main" id="main">
+
+
+
+
+
+<div class="article banner top">
+  <div class="content">
+    <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/Android/">Android</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-09-27T02:52:25.000Z">2024-09-27</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-09-27T09:02:37.931Z">2024-09-27</time></span></div></div></div>
+    
+    <div class="bottom only-title">
+      
+      <div class="text-area">
+        <h1 class="text title"><span>Binder原理浅析</span></h1>
+        
+      </div>
+    </div>
+    
+  </div>
+  </div><article class="md-text content"><h1 id="Binder原理浅析"><a href="#Binder原理浅析" class="headerlink" title="Binder原理浅析"></a>Binder原理浅析</h1><h2 id="一、Binder优势"><a href="#一、Binder优势" class="headerlink" title="一、Binder优势"></a>一、Binder优势</h2><table>
+<thead>
+<tr>
+<th><strong>优势</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性能</td>
+<td>一次数据拷贝，mmap内存映射</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>基于 C&#x2F;S 架构，架构清晰、职责明确</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程序通过猜测接收方地址获得连接</td>
+</tr>
+</tbody></table>
+<h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
+<li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
+</ul>
+<style>.lxhqwuxynqjx{zoom:50%;}</style><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="lxhqwuxynqjx lazy" alt="img">
+
+<ul>
+<li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
+</ul>
+<h3 id="2-2、Binder通信模型"><a href="#2-2、Binder通信模型" class="headerlink" title="2.2、Binder通信模型"></a>2.2、Binder通信模型</h3><p>Binder由四个组件<strong>Client</strong>、<strong>Server</strong>、<strong>Service Manager</strong>和<strong>Binder驱动程序</strong>组成</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-729b3444cd784d882215a24067893d0e_720w.webp" class="lazy" title="img">
+
+<ol>
+<li>Client、Server和Service Manager实现在用户空间中，Binder驱动程序实现在内核空间中</li>
+<li>Binder驱动程序和Service Manager在Android平台中已经实现，开发者只需要在用户空间实现自己的Client和Server</li>
+<li>Binder驱动程序提供设备文件&#x2F;dev&#x2F;binder与用户空间交互，Client、Server和Service Manager通过open和ioctl文件操作函数与Binder驱动程序进行通信</li>
+<li>Client和Server之间的进程间通信通过Binder驱动程序间接实现</li>
+<li>Service Manager是一个守护进程，用来管理Server，并向Client提供查询Server接口的能力</li>
+</ol>
+<h3 id="2-3、Binder通信过程"><a href="#2-3、Binder通信过程" class="headerlink" title="2.3、Binder通信过程"></a>2.3、Binder通信过程</h3><ol>
+<li>首先，一个进程使用 BINDER<em>SET</em>CONTEXT_MGR 命令通过 Binder 驱动将自己注册成为 ServiceManager；</li>
+<li>Server 通过驱动向 ServiceManager 中注册 Binder（Server 中的 Binder 实体），表明可以对外提供服务。驱动为这个 Binder 创建位于内核中的实体节点以及 ServiceManager 对实体的引用，将名字以及新建的引用打包传给 ServiceManager，ServiceManger 将其填入查找表。</li>
+<li>Client 通过名字，在 Binder 驱动的帮助下从 ServiceManager 中获取到对 Binder 实体的引用，通过这个引用就能实现和 Server 进程的通信。</li>
+</ol>
+<p>我们看到整个通信过程都需要 Binder 驱动的接入。下图能更加直观的展现整个通信过程(为了进一步抽象通信过程以及呈现上的方便，下图我们忽略了 Binder 实体及其引用的概念)：</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-67854cdf14d07a6a4acf9d675354e1ff_720w.webp" class="lazy" title="img">
+
+<h3 id="2-4、Binder实现过程"><a href="#2-4、Binder实现过程" class="headerlink" title="2.4、Binder实现过程"></a>2.4、Binder实现过程</h3><h4 id="2-4-1、-实现图解"><a href="#2-4-1、-实现图解" class="headerlink" title="2.4.1、 实现图解"></a>2.4.1、 实现图解</h4><p>client请求service服务，比如说Activity请求Activity ManagerService服务，由于Activity和ActivityManagerService是在两个不同的进程中的，那么下图是一个很直观的请求过程。</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6f1fc5a80tplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<p><strong>但是注意</strong>，一个进程是不能直接直接操作另一个进程的，比如说读取另一个进程的数据，或者往另一个进程的内存空间写数据，进程之间的通信要通过内核进程才可以，因此这里就要使用到进程通信工具Binder了如下图：</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e9373ce5tplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<p><strong>但是</strong>上面还有个问题就是client和service要直接和binder driver打交道，但是实际上client和service并不想知道binder相关协议，所以进一步client通过添加proxy代理，service通过添加stub来进一步处理与binder的交互。</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e959b77etplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<p>这样的好处是client和service都可以不用直接去和binder打交道。上面的图好像已经很完善了，但是Android系统更进一步封装，不让client知道Binder的存在，Android系统提供了Manager来管理client。如下图：</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed729e2b6e4tplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<p>这样client只需要交给manager来管理就好了，根本就不用关心进程通信相关的事，关于manager其实是很熟悉的，比如说activity的就是由ActivityManager来控制的，ActivityManager是通过Binder获取ActivityManagerService来控制activity的。这样就不用我们自己来使用Binder来ActivityManagerService通信了。</p>
+<p>更进一步，client是如何具体获取到哪个service的呢？如下图所示：</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed72270d98etplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<p>在service和binder之间还有一个contextManager，也就是serviceManager，每一个service要先往serviceManager里面进行注册，注册完成之后由serviceManager统一管理。 在Android studio中可以通过adb指定打印出当前已经注册过serviceManager的service。</p>
+<h4 id="2-4-2、实现示例"><a href="#2-4-2、实现示例" class="headerlink" title="2.4.2、实现示例"></a>2.4.2、实现示例</h4><p>示例调用流程如下：</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/5ecf5179cc274c4c8c1e726013ca04d7tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="lazy" title="img">
+
+<h5 id="2-4-2-1-客户端Activity"><a href="#2-4-2-1-客户端Activity" class="headerlink" title="2.4.2.1 客户端Activity"></a>2.4.2.1 客户端Activity</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//NoAidlActivity.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">    <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, MyService.class);</span><br><span class="line"></span><br><span class="line">    bindService(intent, <span class="keyword">new</span> <span class="title class_">ServiceConnection</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> &#123;</span><br><span class="line">            <span class="comment">//1. 从对象池拿到可复用的对象（享元模式）</span></span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;666&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端向服务端发送：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 往data写数据，作为请求参数</span></span><br><span class="line">            data.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 拿到服务端的IBinder句柄，调用transact</span></span><br><span class="line">            <span class="comment">//约定行为码是1；需要服务端的返回值，所以flags传0表示同步调用</span></span><br><span class="line">            service.transact(<span class="number">1</span>, data, reply, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="comment">//4. 从reply读取服务端的返回值</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端接收服务端返回：&quot;</span> + reply.readString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, Context.BIND_AUTO_CREATE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如上代码，主要查看步骤2与步骤3。写入参数’666’至data，service.transact把data作为参数传递。</p>
+<h5 id="2-4-2-2-服务端运行的Service"><a href="#2-4-2-2-服务端运行的Service" class="headerlink" title="2.4.2.2 服务端运行的Service"></a>2.4.2.2 服务端运行的Service</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">extends</span> <span class="title class_">Service</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> IBinder <span class="title function_">onBind</span><span class="params">(Intent intent)</span> &#123;</span><br><span class="line">        <span class="comment">//返回服务端的IBinder句柄</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyBinder</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册服务，让服务端Service运行在<code>:remote</code>进程，来实现跨进程</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;.binder.no_aidl.MyService&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:process</span>=<span class="string">&quot;:remote&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行在服务端的Binder对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyBinder</span> <span class="keyword">extends</span> <span class="title class_">Binder</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (code == <span class="number">1</span>) &#123;<span class="comment">//如果是约定好的行为码1</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是服务端 MyBinder , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line">            <span class="comment">//1. 从data读取客户端参数</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端收到：&quot;</span> + data.readString());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;777&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端返回：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 从reply向客户端写返回值</span></span><br><span class="line">            reply.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 处理完成</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出日志</p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/b648c0439d854405b3189bc6d5079c9ftplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="lazy" title="img">
+
+<p>Binder机制使用了<strong>Parcel来序列化数据</strong>，客户端在主线程调用了<strong>transact来请求</strong>（Parcel data传参），服务端在<strong>Binder线程</strong>调用<strong>onTransact来响应</strong>（Parcel reply回传结果）。</p>
+<h2 id="三、Binder源码流程"><a href="#三、Binder源码流程" class="headerlink" title="三、Binder源码流程"></a>三、Binder源码流程</h2><h3 id="3-1、Binder的调用流程图"><a href="#3-1、Binder的调用流程图" class="headerlink" title="3.1、Binder的调用流程图"></a>3.1、Binder的调用流程图</h3><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714ed5c901bcca2tplv-t2oaga2asx-jj-mark3024000q75.webp" class="lazy" title="在这里插入图片描述">
+
+<h3 id="3-2、客户端与驱动交互"><a href="#3-2、客户端与驱动交互" class="headerlink" title="3.2、客户端与驱动交互"></a>3.2、客户端与驱动交互</h3><p>先来看客户端与驱动的交互。因为是跨进程调用（指定了<code>:remote</code>），示例里onServiceConnected回调回来的service对象是个BinderProxy代理实例（不跨进程的话会发生<code>远程转本地</code>，后面讲），我们以service.transact(1, data, reply, 0)这行调用作为入口跟进。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BinderProxy.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">    <span class="comment">//调用了native方法</span></span><br><span class="line">    <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个native方法在<a target="_blank" rel="noopener" href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/base/core/jni/android_util_Binder.cpp">android_util_Binder.cpp</a>里注册</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//JNI注册</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> JNINativeMethod gBinderProxyMethods[] = &#123;</span><br><span class="line">    &#123; <span class="string">&quot;transactNative&quot;</span>,</span><br><span class="line">     <span class="string">&quot;(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z&quot;</span>,</span><br><span class="line">     (<span class="type">void</span>*)android_os_BinderProxy_transact&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//native方法具体实现</span></span><br><span class="line"><span class="function"><span class="type">static</span> jboolean <span class="title">android_os_BinderProxy_transact</span><span class="params">(JNIEnv* env, jobject obj,</span></span></span><br><span class="line"><span class="params"><span class="function">        jint code, jobject dataObj, jobject replyObj, jint flags)</span></span>&#123;</span><br><span class="line">    <span class="comment">//转成native层的Parcel</span></span><br><span class="line">    Parcel* data = <span class="built_in">parcelForJavaObject</span>(env, dataObj);</span><br><span class="line">    Parcel* reply = <span class="built_in">parcelForJavaObject</span>(env, replyObj);</span><br><span class="line">    <span class="comment">//拿到native层的句柄BpBinder</span></span><br><span class="line">    IBinder* target = (IBinder*)</span><br><span class="line">        env-&gt;<span class="built_in">GetLongField</span>(obj, gBinderProxyOffsets.mObject);</span><br><span class="line">    <span class="comment">//调用BpBinder的transact</span></span><br><span class="line">    <span class="type">status_t</span> err = target-&gt;<span class="built_in">transact</span>(code, *data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续跟<a target="_blank" rel="noopener" href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/BpBinder.cpp">BpBinder.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BpBinder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BpBinder::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//交给线程单例处理，驱动会根据mHandle值来找到对应的binder句柄</span></span><br><span class="line">    <span class="type">status_t</span> status = IPCThreadState::<span class="built_in">self</span>()-&gt;<span class="built_in">transact</span>(</span><br><span class="line">        mHandle, code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>IPCThreadState是一个<strong>线程单例</strong>，负责与binder驱动进行具体的指令通信，跟进<a target="_blank" rel="noopener" href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/IPCThreadState.cpp">IPCThreadState.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//将数据写入mOut，见1.1</span></span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_TRANSACTION, flags, handle, code, data, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...先忽略one way异步调用的代码，只看有返回值的同步调用</span></span><br><span class="line">    <span class="comment">//跟binder驱动交互，传入reply接收返回数据，见1.2</span></span><br><span class="line">    err = <span class="built_in">waitForResponse</span>(reply);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 将数据写入mOut</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::writeTransactionData</span><span class="params">(...)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    binder_transaction_data tr;</span><br><span class="line">    <span class="comment">//...打包各种数据（data size、buffer、offsets）</span></span><br><span class="line">    tr.sender_euid = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//将BC_TRANSACTION指令写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(cmd);</span><br><span class="line">    <span class="comment">//将打包好的binder_transaction_data写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">write</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 跟binder驱动交互，传入reply接收返回数据</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::waitForResponse</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//这个循环很重要，客户端就是在这里休眠等待服务端返回结果的</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">//跟驱动进行数据交互，往驱动写mOut，从驱动读mIn，见1.3</span></span><br><span class="line">        <span class="built_in">talkWithDriver</span>();</span><br><span class="line">        <span class="comment">//读取驱动回复的指令</span></span><br><span class="line">        cmd = (<span class="type">uint32_t</span>)mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">        <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">            <span class="keyword">case</span> BR_TRANSACTION_COMPLETE:</span><br><span class="line">                <span class="comment">//表示驱动已经收到客户端的transact请求</span></span><br><span class="line">                <span class="comment">//如果是one way异步调用，到这就可以结束了</span></span><br><span class="line">                <span class="keyword">if</span> (!reply &amp;&amp; !acquireResult) <span class="keyword">goto</span> finish;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> BR_REPLY:</span><br><span class="line">                <span class="comment">//表示客户端收到服务端的返回结果</span></span><br><span class="line">                binder_transaction_data tr;</span><br><span class="line">                <span class="comment">//把服务端的数据读出来，打包进tr</span></span><br><span class="line">                err = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">                <span class="comment">//再把tr的数据透传进reply</span></span><br><span class="line">                reply-&gt;<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line">                <span class="comment">//结束</span></span><br><span class="line">                <span class="keyword">goto</span> finish;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 跟驱动进行数据交互，往驱动写mOut，从驱动读mIn</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::talkWithDriver</span><span class="params">(<span class="type">bool</span> doReceive)</span></span>&#123;</span><br><span class="line">    binder_write_read bwr;</span><br><span class="line">    <span class="comment">//指定写数据大小和写缓冲区</span></span><br><span class="line">    bwr.write_size = outAvail;</span><br><span class="line">    bwr.write_buffer = (<span class="type">uintptr_t</span>)mOut.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//指定读数据大小和读缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (doReceive &amp;&amp; needRead) &#123;</span><br><span class="line">        bwr.read_size = mIn.<span class="built_in">dataCapacity</span>();</span><br><span class="line">        bwr.read_buffer = (<span class="type">uintptr_t</span>)mIn.<span class="built_in">data</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bwr.read_size = <span class="number">0</span>;</span><br><span class="line">        bwr.read_buffer = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ioctl的调用进入了binder驱动层的binder_ioctl</span></span><br><span class="line">    <span class="built_in">ioctl</span>(mProcess-&gt;mDriverFD, BINDER_WRITE_READ, &amp;bwr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.write_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//数据已经写入驱动，从mOut移除</span></span><br><span class="line">        <span class="keyword">if</span> (bwr.write_consumed &lt; mOut.<span class="built_in">dataSize</span>())</span><br><span class="line">            mOut.<span class="built_in">remove</span>(<span class="number">0</span>, bwr.write_consumed);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            mOut.<span class="built_in">setDataSize</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (bwr.read_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//从驱动读出数据存入mIn</span></span><br><span class="line">        mIn.<span class="built_in">setDataSize</span>(bwr.read_consumed);</span><br><span class="line">        mIn.<span class="built_in">setDataPosition</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ioctl的调用进入了<strong>binder驱动层的binder_ioctl</strong></p>
+<h3 id="3-3、服务端与驱动交互"><a href="#3-3、服务端与驱动交互" class="headerlink" title="3.3、服务端与驱动交互"></a>3.3、服务端与驱动交互</h3><p>服务端创建了一个线程注册进binder驱动，即binder线程，在<a target="_blank" rel="noopener" href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/ProcessState.cpp">ProcessState.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">IPCThreadState::joinThreadPool</span><span class="params">(<span class="type">bool</span> isMain)</span></span>&#123;</span><br><span class="line">    <span class="comment">//向binder驱动写数据，表示当前线程需要注册进binder驱动</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(isMain ? BC_ENTER_LOOPER : BC_REGISTER_LOOPER);</span><br><span class="line">    <span class="type">status_t</span> result;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">//进入死循环，等待指令的到来，见1.1</span></span><br><span class="line">        result = <span class="built_in">getAndExecuteCommand</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (result != -ECONNREFUSED &amp;&amp; result != -EBADF);</span><br><span class="line">    <span class="comment">//向binder驱动写数据（退出循环，线程结束）</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(BC_EXIT_LOOPER);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 等待指令的到来</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::getAndExecuteCommand</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//跟驱动进行数据交互，驱动会把指令写进mIn</span></span><br><span class="line">    <span class="built_in">talkWithDriver</span>();</span><br><span class="line">    <span class="comment">//从mIn读出指令</span></span><br><span class="line">    cmd = mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">    <span class="comment">//执行指令，见1.2</span></span><br><span class="line">    result = <span class="built_in">executeCommand</span>(cmd);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 执行指令</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::executeCommand</span><span class="params">(<span class="type">int32_t</span> cmd)</span></span>&#123;</span><br><span class="line">    <span class="comment">//客户端发请求到驱动，驱动转发到服务端</span></span><br><span class="line">    <span class="keyword">switch</span> ((<span class="type">uint32_t</span>)cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> BR_TRANSACTION:&#123;</span><br><span class="line">            <span class="comment">//服务端收到BR_TRANSACTION指令</span></span><br><span class="line">            binder_transaction_data tr;</span><br><span class="line">            <span class="comment">//读出客户端请求的参数</span></span><br><span class="line">            result = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line"></span><br><span class="line">            <span class="comment">//准备数据，向上传给Java层</span></span><br><span class="line">            Parcel buffer; Parcel reply;</span><br><span class="line">            buffer.<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//cookie保存的是binder实体，对应服务端的native层对象就是BBinder</span></span><br><span class="line">            <span class="built_in">reinterpret_cast</span>&lt;BBinder*&gt;(tr.cookie)-&gt;<span class="built_in">transact</span>(tr.code, buffer,</span><br><span class="line">                                                            &amp;reply, tr.flags);</span><br><span class="line">            <span class="comment">//服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line">            <span class="built_in">sendReply</span>(reply, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::sendReply</span><span class="params">(<span class="type">const</span> Parcel&amp; reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_REPLY, flags, <span class="number">-1</span>, <span class="number">0</span>, reply, &amp;statusBuffer);</span><br><span class="line">    <span class="comment">//服务端返回结果给客户端就行，不用等待客户端，所以传NULL</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">waitForResponse</span>(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后看下BBinder的transact是怎么向上传递到Java层的，在<a target="_blank" rel="noopener" href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/Binder.cpp">Binder.cpp</a>中</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BBinder::transact</span><span class="params">(<span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data, </span></span></span><br><span class="line"><span class="params"><span class="function">                           Parcel* reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">            <span class="comment">//ping指令用来判断连通性，即binder句柄是否还活着</span></span><br><span class="line">        <span class="keyword">case</span> PING_TRANSACTION:</span><br><span class="line">            reply-&gt;<span class="built_in">writeInt32</span>(<span class="built_in">pingBinder</span>());</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">//看这，通过JNI调用到Java层的execTransact，见1.1</span></span><br><span class="line">            err = <span class="built_in">onTransact</span>(code, data, reply, flags);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 通过JNI调用到Java层的execTransact</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="type">status_t</span> <span class="title">onTransact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    JNIEnv* env = <span class="built_in">javavm_to_jnienv</span>(mVM);</span><br><span class="line">    jboolean res = env-&gt;<span class="built_in">CallBooleanMethod</span>(mObject, gBinderOffsets.mExecTransact, ...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到Java层，execTransact如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//android.os.Binder.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">execTransact</span><span class="params">(...)</span> &#123;</span><br><span class="line">    res = onTransact(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>额外Binder问题</strong></p>
+<p>1、<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/ea4fc6aefaa8">[007]一次Binder通信最大可以传输多大的数据？</a></p>
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/image-20240927165800594.png" class="lazy" title="image-20240927165800594">
+
+<p>2、<a target="_blank" rel="noopener" href="https://blog.csdn.net/maniuT/article/details/132000536">Android跨进程传大图思考及实现——附上原理分析</a></p>
+<p>1.Binder驱动给每个进程<strong>最多分配4M</strong>的buffer空间大小；<br>2.异步事务的空闲缓冲区空间大小<strong>最多为2M</strong>；<br>3.Binder内核内存上限为<strong>1M-8k</strong>;<br>4.异步事务缓冲区空间大小等于<strong>buffer_size&#x2F;2</strong>，具体值取决于<strong>buffer_size</strong>; </p>
+<p>TODO：Binder内核、IPCThreadState相关知识点的整理</p>
+<p><strong>参考资料：</strong></p>
+<p> <a target="_blank" rel="noopener" href="https://www.freesion.com/article/69441396225/" title="https://my.oschina.net/wolfcs/blog/209421">Android Binder 线程</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/35519585">写给 Android 应用工程师的 Binder 原理剖析</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6890088205916307469">图解 | 不得错过的Binder浅析（一）</a></p>
+<p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844904115777044488#comment">图解Android中的binder机制</a></p>
+<p><a target="_blank" rel="noopener" href="https://my.oschina.net/youranhongcha/blog/149578">红茶一杯话 Binder（ServiceManager 篇）</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/luoshengyang/article/details/6618363">Android进程间通信（IPC）机制Binder简要介绍和学习计划（罗升阳）</a></p>
+
+<div class="article-footer fs14">
+    <section id="license">
+      <div class="header"><span>许可协议</span></div>
+      <div class="body"><p>本文采用 <a target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">署名-非商业性使用-相同方式共享 4.0 国际</a> 许可协议，转载请注明出处。</p>
+</div>
+    </section>
+    
+    <section id="share">
+      <div class="header"><span>分享文章</span></div>
+      <div class="body">
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/&title=Binder原理浅析 - yuan19'Blog&summary=Binder原理浅析一、Binder优势
+
+
+优势
+描述
+
+
+
+性能
+一次数据拷贝，mmap内存映射
+
+
+稳定性
+基于 C&#x2F;S 架构，架构清晰、职责明确
+
+
+安全性
+为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程..."><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=Binder原理浅析 - yuan19'Blog&amp;body=https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        
+        <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://yuan19.github.io/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/"/>
+        </div>
+        
+      </div>
+    </section>
+    </div>
+</article>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">Android启动流程</a></div></section></div>
+
+
+
+
+  <div class="related-wrap md-text" id="comments">
+    <section class='header cmt-title cap theme'>
+      <p>快来参与讨论吧~</p>
+
+    </section>
+    <section class='body cmt-body giscus'>
+      
+
+<svg class="loading" style="vertical-align:middle;fill:currentColor;overflow:hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2709"><path d="M832 512c0-176-144-320-320-320V128c211.2 0 384 172.8 384 384h-64zM192 512c0 176 144 320 320 320v64C300.8 896 128 723.2 128 512h64z" p-id="2710"></path></svg>
+
+<div id="giscus" src="https://giscus.app/client.js" data-repo="yuan19/hexo-comment" data-repo-id="R_kgDOM3XMlg" data-category="Announcements" data-category-id="DIC_kwDOM3XMls4CizNW" data-mapping="pathname" data-strict="0" data-reactions-enabled="1" data-emit-metadata="0" data-input-position="top" data-theme="preferred_color_scheme" data-lang="zh-CN" data-loading="lazy" crossorigin="anonymous"></div>
+
+    </section>
+  </div>
+
+
+
+<!--卜算子统计-->
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+</script>
+<footer class="page-footer footnote"><hr><div class="text"><p><span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span></p>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</div></footer>
+<div class="main-mask" onclick="sidebar.dismiss()"></div></div><aside class="l_right">
+<div class="widgets">
+
+
+
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90"><span class="toc-text">Binder原理浅析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81Binder%E4%BC%98%E5%8A%BF"><span class="toc-text">一、Binder优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81Binder%E6%A6%82%E8%A6%81%E8%AE%BE%E8%AE%A1"><span class="toc-text">二、Binder概要设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1%E3%80%81%E8%BF%9B%E7%A8%8B%E9%9A%94%E7%A6%BB"><span class="toc-text">2.1、进程隔离</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2%E3%80%81Binder%E9%80%9A%E4%BF%A1%E6%A8%A1%E5%9E%8B"><span class="toc-text">2.2、Binder通信模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3%E3%80%81Binder%E9%80%9A%E4%BF%A1%E8%BF%87%E7%A8%8B"><span class="toc-text">2.3、Binder通信过程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4%E3%80%81Binder%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="toc-text">2.4、Binder实现过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1%E3%80%81-%E5%AE%9E%E7%8E%B0%E5%9B%BE%E8%A7%A3"><span class="toc-text">2.4.1、 实现图解</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2%E3%80%81%E5%AE%9E%E7%8E%B0%E7%A4%BA%E4%BE%8B"><span class="toc-text">2.4.2、实现示例</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-4-2-1-%E5%AE%A2%E6%88%B7%E7%AB%AFActivity"><span class="toc-text">2.4.2.1 客户端Activity</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-4-2-2-%E6%9C%8D%E5%8A%A1%E7%AB%AF%E8%BF%90%E8%A1%8C%E7%9A%84Service"><span class="toc-text">2.4.2.2 服务端运行的Service</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81Binder%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B"><span class="toc-text">三、Binder源码流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1%E3%80%81Binder%E7%9A%84%E8%B0%83%E7%94%A8%E6%B5%81%E7%A8%8B%E5%9B%BE"><span class="toc-text">3.1、Binder的调用流程图</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2%E3%80%81%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%B8%8E%E9%A9%B1%E5%8A%A8%E4%BA%A4%E4%BA%92"><span class="toc-text">3.2、客户端与驱动交互</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3%E3%80%81%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%B8%8E%E9%A9%B1%E5%8A%A8%E4%BA%A4%E4%BA%92"><span class="toc-text">3.3、服务端与驱动交互</span></a></li></ol></li></ol></li></ol></div><div class="widget-footer">
+
+<a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a></div></widget>
+</div></aside><div class='float-panel blur'>
+  <button type='button' style='display:none' class='laptop-only rightbar-toggle mobile' onclick='sidebar.rightbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg>
+  </button>
+  <button type='button' style='display:none' class='mobile-only leftbar-toggle mobile' onclick='sidebar.leftbar()'>
+    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 11c0-3.771 0-5.657 1.172-6.828C4.343 3 6.229 3 10 3h4c3.771 0 5.657 0 6.828 1.172C22 5.343 22 7.229 22 11v2c0 3.771 0 5.657-1.172 6.828C19.657 21 17.771 21 14 21h-4c-3.771 0-5.657 0-6.828-1.172C2 18.657 2 16.771 2 13z"/><path id="sep" stroke-linecap="round" d="M5.5 10h6m-5 4h4m4.5 7V3"/></g></svg>
+  </button>
+</div>
+</div><div class="scripts">
+<script type="text/javascript">
+  const ctx = {
+    date_suffix: {
+      just: `刚刚`,
+      min: `分钟前`,
+      hour: `小时前`,
+      day: `天前`,
+    },
+    root : `/`,
+  };
+
+  // required plugins (only load if needs)
+  if (`local_search`) {
+    ctx.search = {};
+    ctx.search.service = `local_search`;
+    if (ctx.search.service == 'local_search') {
+      let service_obj = Object.assign({}, `{"field":"all","path":"/search.json","content":true,"sort":"-date"}`);
+      ctx.search[ctx.search.service] = service_obj;
+    }
+  }
+  const def = {
+    avatar: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/avatar/round/3442075.svg`,
+    cover: `https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/cover/76b86c0226ffd.svg`,
+  };
+  const deps = {
+    jquery: `https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js`,
+    marked: `https://cdn.jsdelivr.net/npm/marked@13.0.1/lib/marked.umd.min.js`
+  }
+  
+
+</script>
+
+<script type="text/javascript">
+  const utils = {
+    // 懒加载 css https://github.com/filamentgroup/loadCSS
+    css: (href, before, media, attributes) => {
+      var doc = window.document;
+      var ss = doc.createElement("link");
+      var ref;
+      if (before) {
+        ref = before;
+      } else {
+        var refs = (doc.body || doc.getElementsByTagName("head")[0]).childNodes;
+        ref = refs[refs.length - 1];
+      }
+      var sheets = doc.styleSheets;
+      if (attributes) {
+        for (var attributeName in attributes) {
+          if (attributes.hasOwnProperty(attributeName)) {
+            ss.setAttribute(attributeName, attributes[attributeName]);
+          }
+        }
+      }
+      ss.rel = "stylesheet";
+      ss.href = href;
+      ss.media = "only x";
+      function ready(cb) {
+        if (doc.body) {
+          return cb();
+        }
+        setTimeout(function () {
+          ready(cb);
+        });
+      }
+      ready(function () {
+        ref.parentNode.insertBefore(ss, before ? ref : ref.nextSibling);
+      });
+      var onloadcssdefined = function (cb) {
+        var resolvedHref = ss.href;
+        var i = sheets.length;
+        while (i--) {
+          if (sheets[i].href === resolvedHref) {
+            return cb();
+          }
+        }
+        setTimeout(function () {
+          onloadcssdefined(cb);
+        });
+      };
+      function loadCB() {
+        if (ss.addEventListener) {
+          ss.removeEventListener("load", loadCB);
+        }
+        ss.media = media || "all";
+      }
+      if (ss.addEventListener) {
+        ss.addEventListener("load", loadCB);
+      }
+      ss.onloadcssdefined = onloadcssdefined;
+      onloadcssdefined(loadCB);
+      return ss;
+    },
+
+    js: (src, opt) => new Promise((resolve, reject) => {
+      var script = document.createElement('script');
+      if (src.startsWith('/')){
+        src = ctx.root + src.substring(1);
+      }
+      script.src = src;
+      if (opt) {
+        for (let key of Object.keys(opt)) {
+          script[key] = opt[key]
+        }
+      } else {
+        // 默认异步，如果需要同步，第二个参数传入 {} 即可
+        script.async = true
+      }
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    }),
+
+    jq: (fn) => {
+      if (typeof jQuery === 'undefined') {
+        utils.js(deps.jquery).then(fn)
+      } else {
+        fn()
+      }
+    },
+    
+    onLoading: (el) => {
+      if (el) {
+        $(el).append('<div class="loading-wrap"><svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" stroke-opacity=".3" d="M12 3C16.9706 3 21 7.02944 21 12C21 16.9706 16.9706 21 12 21C7.02944 21 3 16.9706 3 12C3 7.02944 7.02944 3 12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="1.3s" values="60;0"/></path><path stroke-dasharray="15" stroke-dashoffset="15" d="M12 3C16.9706 3 21 7.02944 21 12"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.3s" values="15;0"/><animateTransform attributeName="transform" dur="1.5s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></path></g></svg></div>');
+      }
+    },
+    onLoadSuccess: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap').remove();
+      }
+    },
+    onLoadFailure: (el) => {
+      if (el) {
+        $(el).find('.loading-wrap svg').remove();
+        $(el).find('.loading-wrap').append('<svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path stroke-dasharray="60" stroke-dashoffset="60" d="M12 3L21 20H3L12 3Z"><animate fill="freeze" attributeName="stroke-dashoffset" dur="0.5s" values="60;0"/></path><path stroke-dasharray="6" stroke-dashoffset="6" d="M12 10V14"><animate fill="freeze" attributeName="stroke-dashoffset" begin="0.6s" dur="0.2s" values="6;0"/></path></g><circle cx="12" cy="17" r="1" fill="currentColor" fill-opacity="0"><animate fill="freeze" attributeName="fill-opacity" begin="0.8s" dur="0.4s" values="0;1"/></circle></svg>');
+        $(el).find('.loading-wrap').addClass('error');
+      }
+    },
+    request: (el, url, callback, onFailure) => {
+      let retryTimes = 3;
+      utils.onLoading(el);
+      function req() {
+        return new Promise((resolve, reject) => {
+          let status = 0; // 0 等待 1 完成 2 超时
+          let timer = setTimeout(() => {
+            if (status === 0) {
+              status = 2;
+              timer = null;
+              reject('请求超时');
+              if (retryTimes == 0) {
+                onFailure();
+              }
+            }
+          }, 5000);
+          fetch(url).then(function(response) {
+            if (status !== 2) {
+              clearTimeout(timer);
+              resolve(response);
+              timer = null;
+              status = 1;
+            }
+            if (response.ok) {
+              return response.json();
+            }
+            throw new Error('Network response was not ok.');
+          }).then(function(data) {
+            retryTimes = 0;
+            utils.onLoadSuccess(el);
+            callback(data);
+          }).catch(function(error) {
+            if (retryTimes > 0) {
+              retryTimes -= 1;
+              setTimeout(() => {
+                req();
+              }, 5000);
+            } else {
+              utils.onLoadFailure(el);
+              onFailure();
+            }
+          });
+        });
+      }
+      req();
+    },
+  };
+</script>
+
+<script>
+  const sidebar = {
+    leftbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    rightbar: () => {
+      if (l_body) {
+        l_body.toggleAttribute('rightbar');
+        l_body.removeAttribute('leftbar');
+      }
+    },
+    dismiss: () => {
+      if (l_body) {
+        l_body.removeAttribute('leftbar');
+        l_body.removeAttribute('rightbar');
+      }
+    },
+    toggleTOC: () => {
+      document.querySelector('#data-toc').classList.toggle('collapse');
+    }
+  }
+</script>
+<script type="text/javascript">
+  (() => {
+    const tagSwitchers = document.querySelectorAll('.tag-subtree.parent-tag > a > .tag-switcher-wrapper')
+    for (const tagSwitcher of tagSwitchers) {
+      tagSwitcher.addEventListener('click', (e) => {
+        const parent = e.target.closest('.tag-subtree.parent-tag')
+        parent.classList.toggle('expanded')
+        e.preventDefault()
+      })
+    }
+
+    // Get active tag from query string, then activate it.
+    const urlParams = new URLSearchParams(window.location.search)
+    const activeTag = urlParams.get('tag')
+    if (activeTag) {
+      let tag = document.querySelector(`.tag-subtree[data-tag="${activeTag}"]`)
+      if (tag) {
+        tag.querySelector('a').classList.add('active')
+        
+        while (tag) {
+          tag.classList.add('expanded')
+          tag = tag.parentElement.closest('.tag-subtree.parent-tag')
+        }
+      }
+    }
+  })()
+</script>
+
+
+<!-- required -->
+<script src="/js/main.js?v=1.29.1" defer></script>
+
+<script type="text/javascript">
+  const applyTheme = (theme) => {
+    if (theme === 'auto') {
+      document.documentElement.removeAttribute('data-theme')
+    } else {
+      document.documentElement.setAttribute('data-theme', theme)
+    }
+
+    applyThemeToGiscus(theme)
+  }
+
+  const applyThemeToGiscus = (theme) => {
+    theme = theme === 'auto' ? 'preferred_color_scheme' : theme
+
+    const cmt = document.getElementById('giscus')
+    if (cmt) {
+      // This works before giscus load.
+      cmt.setAttribute('data-theme', theme)
+    }
+
+    const iframe = document.querySelector('#comments > section.giscus > iframe')
+    if (iframe) {
+      // This works after giscus loaded.
+      const src = iframe.src
+      const newSrc = src.replace(/theme=[\w]+/, `theme=${theme}`)
+      iframe.src = newSrc
+    }
+  }
+
+  const switchTheme = () => {
+    // light -> dark -> auto -> light -> ...
+    const currentTheme = document.documentElement.getAttribute('data-theme')
+    let newTheme;
+    switch (currentTheme) {
+      case 'light':
+        newTheme = 'dark'
+        break
+      case 'dark':
+        newTheme = 'auto'
+        break
+      default:
+        newTheme = 'light'
+    }
+    applyTheme(newTheme)
+    window.localStorage.setItem('Stellar.theme', newTheme)
+
+    const messages = {
+      light: `切换到浅色模式`,
+      dark: `切换到深色模式`,
+      auto: `切换到跟随系统配色`,
+    }
+    hud?.toast?.(messages[newTheme])
+  }
+
+  (() => {
+    // Apply user's preferred theme, if any.
+    const theme = window.localStorage.getItem('Stellar.theme')
+    if (theme !== null) {
+      applyTheme(theme)
+    }
+  })()
+</script>
+
+
+<!-- optional -->
+
+  <script type="module">
+  const el = document.querySelector('#comments #giscus');
+  util.viewportLazyload(el, load_discus, false);
+
+  function load_discus() {
+    if (!el) return;
+    try {
+        el.innerHTML = '';
+      } catch (error) {
+        console.error(error);
+      }
+      const script = document.createElement('script');
+      script.async = true;
+      for (const key of Object.keys(el.attributes)) {
+        const attr = el.attributes[key];
+        if (['class', 'id'].includes(attr.name) === false) {
+          script.setAttribute(attr.name, attr.value);
+        }
+      }
+      el.appendChild(script);
+  }
+</script>
+
+
+
+
+<script defer>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.services = Object.assign({}, JSON.parse(`{"mdrender":{"js":"/js/services/mdrender.js"},"siteinfo":{"js":"/js/services/siteinfo.js","api":null},"ghinfo":{"js":"/js/services/ghinfo.js"},"sites":{"js":"/js/services/sites.js"},"friends":{"js":"/js/services/friends.js"},"timeline":{"js":"/js/services/timeline.js"},"fcircle":{"js":"/js/services/fcircle.js"},"weibo":{"js":"/js/services/weibo.js"},"memos":{"js":"/js/services/memos.js"}}`));
+    for (let id of Object.keys(ctx.services)) {
+      const js = ctx.services[id].js;
+      if (id == 'siteinfo') {
+        ctx.cardlinks = document.querySelectorAll('a.link-card[cardlink]');
+        if (ctx.cardlinks?.length > 0) {
+          utils.js(js, { defer: true }).then(function () {
+            setCardLink(ctx.cardlinks);
+          });
+        }
+      } else {
+        const els = document.getElementsByClassName(`ds-${id}`);
+        if (els?.length > 0) {
+          utils.jq(() => {
+            if (id == 'timeline' || 'memos' || 'marked') {
+              utils.js(deps.marked).then(function () {
+                utils.js(js, { defer: true });
+              });
+            } else {
+              utils.js(js, { defer: true });
+            }
+          });
+        }
+      }
+    }
+  });
+</script>
+
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    ctx.search = {
+      path: `/search.json`,
+    }
+    utils.js('/js/search/local-search.js', { defer: true });
+  });
+</script><script>
+  window.FPConfig = {
+    delay: 0,
+    ignoreKeywords: [],
+    maxRPS: 5,
+    hoverDelay: 25
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/flying-pages@2/flying-pages.min.js"></script><script defer src="https://cdn.jsdelivr.net/npm/vanilla-lazyload@19.1.3/dist/lazyload.min.js"></script>
+<script>
+  // https://www.npmjs.com/package/vanilla-lazyload
+  // Set the options globally
+  // to make LazyLoad self-initialize
+  window.lazyLoadOptions = {
+    elements_selector: ".lazy",
+  };
+  // Listen to the initialization event
+  // and get the instance of LazyLoad
+  window.addEventListener(
+    "LazyLoad::Initialized",
+    function (event) {
+      window.lazyLoadInstance = event.detail.instance;
+    },
+    false
+  );
+  document.addEventListener('DOMContentLoaded', function () {
+    window.lazyLoadInstance?.update();
+  });
+</script><script>
+  ctx.fancybox = {
+    selector: `.timenode p>img`,
+    css: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css`,
+    js: `https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js`
+  };
+  var selector = '[data-fancybox]:not(.error)';
+  if (ctx.fancybox.selector) {
+    selector += `, ${ctx.fancybox.selector}`
+  }
+  var needFancybox = document.querySelectorAll(selector).length !== 0;
+  if (!needFancybox) {
+    const els = document.getElementsByClassName('ds-memos');
+    if (els != undefined && els.length > 0) {
+      needFancybox = true;
+    }
+  }
+  if (needFancybox) {
+    utils.css(ctx.fancybox.css);
+    utils.js(ctx.fancybox.js, { defer: true }).then(function () {
+      Fancybox.bind(selector, {
+        hideScrollbar: false,
+        Thumbs: {
+          autoStart: false,
+        },
+        caption: (fancybox, slide) => {
+          return slide.triggerEl.alt || slide.triggerEl.dataset.caption || null
+        }
+      });
+    })
+  }
+</script>
+<script>
+  window.addEventListener('DOMContentLoaded', (event) => {
+    const swiper_api = document.getElementById('swiper-api');
+    if (swiper_api != undefined) {
+      utils.css(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.css`);
+      utils.js(`https://unpkg.com/swiper@10.3.1/swiper-bundle.min.js`, { defer: true }).then(function () {
+        const effect = swiper_api.getAttribute('effect') || '';
+        var swiper = new Swiper('.swiper#swiper-api', {
+          slidesPerView: 'auto',
+          spaceBetween: 8,
+          centeredSlides: true,
+          effect: effect,
+          rewind: true,
+          pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+          },
+          navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+          },
+        });
+      })
+    }
+  });
+</script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    window.codeElements = document.querySelectorAll('.code');
+    if (window.codeElements.length > 0) {
+      ctx.copycode = {
+        default_text: `Copy`,
+        success_text: `Copied`,
+        toast: `复制成功`,
+      };
+      utils.js('/js/plugins/copycode.js');
+    }
+  });
+</script>
+
+
+<!-- inject -->
+
+</div></body></html>
