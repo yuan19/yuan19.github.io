@@ -2,6 +2,53 @@
 <search>
   <entry>
     <title>Android启动流程</title>
+    <url>/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/</url>
+    <content><![CDATA[<h1 id="2023年回顾"><a href="#2023年回顾" class="headerlink" title="2023年回顾"></a>2023年回顾</h1><p>​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。</p>
+<p>​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不区分是app、fwk层、native，哪里有问题就去改哪里，这样就太有好处了，总算能够更加全面的深入系统。</p>
+<p>​	2023独立完成了SystemUI的整个功能样式的修改，后续又解决后台应用性能优化问题，还是有一些成就感，2024努力，努力，再努力。</p>
+]]></content>
+      <categories>
+        <category>生活杂谈</category>
+      </categories>
+      <tags>
+        <tag>总结</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android ATMS应用启动流程</title>
+    <url>/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="Android-ATMS应用启动流程"><a href="#Android-ATMS应用启动流程" class="headerlink" title="Android ATMS应用启动流程"></a>Android ATMS应用启动流程</h1><h2 id="1、Activity启动流程图"><a href="#1、Activity启动流程图" class="headerlink" title="1、Activity启动流程图"></a>1、Activity启动流程图</h2><p>大概流程图，在每个版本中流程都有一些出入，但整体大概流程还是有很多相同之处。</p>
+<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930113952845.png" class="" title="image-20240930113952845">
+
+<p>后续ActivityStackSupervisor处理启动activity请求会把该请求封装成一个ClientTransaction，然后执行Activity对应操作时就向ClientTransaction添加对应的XXActivityItem。而ActivityThread是ClientTransaction的处理者，继承了ClientTransactionHandler，根据XXActivityItem调用handleXXActivity，去执行activity的启动、onResume等生命周期活动。</p>
+<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930114000254.png" class="" title="image-20240930114000254">
+
+<h2 id="2、ClientTransaction数据结构"><a href="#2、ClientTransaction数据结构" class="headerlink" title="2、ClientTransaction数据结构"></a>2、ClientTransaction数据结构</h2><img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/AMS%E6%B5%81%E7%A8%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" class="" title="AMS流程数据结构">
+
+<p>ClientTransaction包含的数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>、<span class="keyword">private</span> List&lt;ClientTransactionItem&gt; mActivityCallbacks;</span><br><span class="line">保存需要传递的ClientTtransactionItem.比如：PauseActivityItem</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、<span class="keyword">private</span> ActivityLifecycleItem mLifecycleStateRequest</span><br><span class="line">下一个需要执行的ActivityLifecycleItem值</span><br><span class="line"></span><br><span class="line"><span class="number">3</span>、<span class="keyword">private</span> IApplicationThread mClient</span><br><span class="line">应用的Client对象</span><br><span class="line"></span><br><span class="line"><span class="number">4</span>、<span class="keyword">private</span> IBinder mActivityToken</span><br><span class="line">当前Activity的token值</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="3、Acttivity-token流程"><a href="#3、Acttivity-token流程" class="headerlink" title="3、Acttivity token流程"></a>3、Acttivity token流程</h2><p>关注完系统进程与应用进程的数据ClientTransaction交互，接下来就是token的流程</p>
+
+
+
+
+<p>参考文章：</p>
+<p><a href="https://blog.csdn.net/weixin_41939525/article/details/126178948">Android—ATMS应用启动流程</a></p>
+<p><a href="https://blog.csdn.net/qq_27481249/article/details/116015635">Android AMS(ATMS)的应用启动流程解析</a></p>
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>framework</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Android启动流程</title>
     <url>/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="Android启动流程"><a href="#Android启动流程" class="headerlink" title="Android启动流程"></a>Android启动流程</h1><p><a href="http://aospxref.com/android-14.0.0_r2/xref/">Android源码基于14</a></p>
 <h2 id="一、Android架构"><a href="#一、Android架构" class="headerlink" title="一、Android架构"></a>一、Android架构</h2><img src="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/705472d33f524bd1ab8dcaf7b2e15d8a.png" class="" title="705472d33f524bd1ab8dcaf7b2e15d8a">
@@ -236,7 +283,7 @@
 <h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
 <li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
 </ul>
-<style>.ewdxkflwstox{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="ewdxkflwstox" alt="img">
+<style>.wqwnphdttlcp{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="wqwnphdttlcp" alt="img">
 
 <ul>
 <li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
@@ -346,42 +393,6 @@
       </tags>
   </entry>
   <entry>
-    <title>std::lock_guard 用法</title>
-    <url>/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<p><code>std::lock_guard</code>是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。<code>std::lock_guard</code>在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。</p>
-<p>以下是<code>std::lock_guard</code>的基本用法：</p>
-<h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><p>在使用<code>std::lock_guard</code>之前，需要包含互斥锁的头文件：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br></pre></td></tr></table></figure>
-
-<h3 id="使用std-lock-guard"><a href="#使用std-lock-guard" class="headerlink" title="使用std::lock_guard"></a>使用<code>std::lock_guard</code></h3><ol>
-<li><strong>创建互斥锁</strong>：<br>首先，你需要有一个<code>std::mutex</code>实例。</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">std::mutex mtx;  </span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><strong>创建<code>std::lock_guard</code>实例</strong>：<br>当你需要对共享资源进行访问时，创建一个<code>std::lock_guard</code>对象，并将互斥锁的引用传递给它。</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">&#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line"><span class="comment">// 在这个作用域内，mtx 被锁定  </span></span><br><span class="line"><span class="comment">// 访问共享资源  </span></span><br><span class="line">&#125; <span class="comment">// 作用域结束时，lock_guard 对象被销毁，mtx 被解锁  </span></span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p><strong>访问共享资源</strong>：<br>在<code>std::lock_guard</code>对象的作用域内，互斥锁被保持锁定状态，你可以安全地访问共享资源。</p>
-</li>
-<li><p><strong>自动解锁</strong>：<br>当离开<code>std::lock_guard</code>对象的作用域时（例如，当作用域的代码块结束时），<code>std::lock_guard</code>对象会被销毁，互斥锁会自动释放。</p>
-</li>
-</ol>
-<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::mutex mtx;  </span><br><span class="line"><span class="type">int</span> shared_data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; ++i) &#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line">++shared_data;  </span><br><span class="line"><span class="comment">// 这里可以安全地修改 shared_data，因为 mtx 已被锁定  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="function">std::thread <span class="title">t1</span><span class="params">(increment)</span></span>;  </span><br><span class="line"><span class="function">std::thread <span class="title">t2</span><span class="params">(increment)</span></span>;</span><br><span class="line"></span><br><span class="line">t<span class="number">1.</span><span class="built_in">join</span>();  </span><br><span class="line">t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; <span class="string">&quot;Final value of shared_data: &quot;</span> &lt;&lt; shared_data &lt;&lt; std::endl;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-
-<p>在这个示例中，我们有两个线程<code>t1</code>和<code>t2</code>，它们都调用<code>increment</code>函数来递增共享数据<code>shared_data</code>。通过使用<code>std::lock_guard</code>，我们确保每次只有一个线程可以修改<code>shared_data</code>，从而避免了竞态条件。</p>
-<p><code>std::lock_guard</code>是线程安全的，并且它提供了一种异常安全的方式来管理锁，因为它保证在发生异常时锁也会被释放。这使得它成为保护共享资源访问的一个很好的选择。</p>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C/C++基础</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>C++双冒号::的作用</title>
     <url>/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/</url>
     <content><![CDATA[<h3 id="全局命名空间"><a href="#全局命名空间" class="headerlink" title="全局命名空间"></a>全局命名空间</h3><p>全局命名空间是一个包含所有全局变量、函数和类型的<span style="color: #ff0000;">隐式命名空间</span>。如果想要在一个局部作用域内访问全局作用域的实体，可以使用双冒号<code>::</code>。</p>
@@ -413,6 +424,42 @@
 
 <p><span style="color: #4d4d4d;">在上述代码中，特化的模板类</span><code>MyClass&lt;int&gt;</code><span style="color: #4d4d4d;">使用</span><code>::</code><span style="color: #4d4d4d;">来访问基础模板类</span><code>MyClass&lt;double&gt;</code><span style="color: #4d4d4d;">的成员。</span></p>
 <p>&nbsp;</p>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C/C++基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>std::lock_guard 用法</title>
+    <url>/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<p><code>std::lock_guard</code>是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。<code>std::lock_guard</code>在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。</p>
+<p>以下是<code>std::lock_guard</code>的基本用法：</p>
+<h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><p>在使用<code>std::lock_guard</code>之前，需要包含互斥锁的头文件：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用std-lock-guard"><a href="#使用std-lock-guard" class="headerlink" title="使用std::lock_guard"></a>使用<code>std::lock_guard</code></h3><ol>
+<li><strong>创建互斥锁</strong>：<br>首先，你需要有一个<code>std::mutex</code>实例。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">std::mutex mtx;  </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>创建<code>std::lock_guard</code>实例</strong>：<br>当你需要对共享资源进行访问时，创建一个<code>std::lock_guard</code>对象，并将互斥锁的引用传递给它。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">&#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line"><span class="comment">// 在这个作用域内，mtx 被锁定  </span></span><br><span class="line"><span class="comment">// 访问共享资源  </span></span><br><span class="line">&#125; <span class="comment">// 作用域结束时，lock_guard 对象被销毁，mtx 被解锁  </span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p><strong>访问共享资源</strong>：<br>在<code>std::lock_guard</code>对象的作用域内，互斥锁被保持锁定状态，你可以安全地访问共享资源。</p>
+</li>
+<li><p><strong>自动解锁</strong>：<br>当离开<code>std::lock_guard</code>对象的作用域时（例如，当作用域的代码块结束时），<code>std::lock_guard</code>对象会被销毁，互斥锁会自动释放。</p>
+</li>
+</ol>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::mutex mtx;  </span><br><span class="line"><span class="type">int</span> shared_data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; ++i) &#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line">++shared_data;  </span><br><span class="line"><span class="comment">// 这里可以安全地修改 shared_data，因为 mtx 已被锁定  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="function">std::thread <span class="title">t1</span><span class="params">(increment)</span></span>;  </span><br><span class="line"><span class="function">std::thread <span class="title">t2</span><span class="params">(increment)</span></span>;</span><br><span class="line"></span><br><span class="line">t<span class="number">1.</span><span class="built_in">join</span>();  </span><br><span class="line">t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; <span class="string">&quot;Final value of shared_data: &quot;</span> &lt;&lt; shared_data &lt;&lt; std::endl;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>在这个示例中，我们有两个线程<code>t1</code>和<code>t2</code>，它们都调用<code>increment</code>函数来递增共享数据<code>shared_data</code>。通过使用<code>std::lock_guard</code>，我们确保每次只有一个线程可以修改<code>shared_data</code>，从而避免了竞态条件。</p>
+<p><code>std::lock_guard</code>是线程安全的，并且它提供了一种异常安全的方式来管理锁，因为它保证在发生异常时锁也会被释放。这使得它成为保护共享资源访问的一个很好的选择。</p>
 ]]></content>
       <categories>
         <category>C/C++</category>
