@@ -17,25 +17,26 @@
   <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#000">
   <meta name="theme-color" content="#f9fafb">
   
-  <title>Android启动流程 - yuan19'Blog</title>
+  <title>广播日志分析 - yuan19'Blog</title>
 
   
-    <meta name="description" content="2023年回顾​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。 ​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不">
+    <meta name="description" content="广播日志分析行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent.action.SCREEN_OFF&#x2F;u-1} from uid 1000 pid 965 for 57 receivers 这里的57 receivers">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android启动流程">
-<meta property="og:url" content="https://yuan19.github.io/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/index.html">
+<meta property="og:title" content="广播日志分析">
+<meta property="og:url" content="https://yuan19.github.io/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/index.html">
 <meta property="og:site_name" content="yuan19&#39;Blog">
-<meta property="og:description" content="2023年回顾​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。 ​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不">
+<meta property="og:description" content="广播日志分析行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent.action.SCREEN_OFF&#x2F;u-1} from uid 1000 pid 965 for 57 receivers 这里的57 receivers">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2024-01-01T10:15:25.000Z">
-<meta property="article:modified_time" content="2024-09-30T05:52:12.362Z">
+<meta property="article:published_time" content="2024-09-30T07:57:22.000Z">
+<meta property="article:modified_time" content="2024-09-30T07:57:52.137Z">
 <meta property="article:author" content="yuan19">
-<meta property="article:tag" content="总结">
+<meta property="article:tag" content="Android">
+<meta property="article:tag" content="技术点">
 <meta name="twitter:card" content="summary">
   
   
   
-  <meta name="keywords" content="总结">
+  <meta name="keywords" content="Android,技术点">
 
   <!-- feed -->
   
@@ -82,21 +83,59 @@
 <div class="article banner top">
   <div class="content">
     <div class="top bread-nav footnote"><div class="left"><div class="flex-row" id="breadcrumb"><a class="cap breadcrumb" href="/">主页</a>
-<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/%E7%94%9F%E6%B4%BB%E6%9D%82%E8%B0%88/">生活杂谈</a></div>
-<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-01-01T10:15:25.000Z">2024-01-01</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-09-30T05:52:12.362Z">2024-09-30</time></span></div></div></div>
+<span class="sep"></span><a class="cap breadcrumb" href="/">文章</a><span class="sep"></span><a class="cap breadcrumb-link" href="/categories/Android/">Android</a></div>
+<div class="flex-row" id="post-meta"><span class="text created">发布于：<time datetime="2024-09-30T07:57:22.000Z">2024-09-30</time></span><span class="sep updated"></span><span class="text updated">更新于：<time datetime="2024-09-30T07:57:52.137Z">2024-09-30</time></span></div></div></div>
     
     <div class="bottom only-title">
       
       <div class="text-area">
-        <h1 class="text title"><span>Android启动流程</span></h1>
+        <h1 class="text title"><span>广播日志分析</span></h1>
         
       </div>
     </div>
     
   </div>
-  </div><article class="md-text content"><h1 id="2023年回顾"><a href="#2023年回顾" class="headerlink" title="2023年回顾"></a>2023年回顾</h1><p>​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。</p>
-<p>​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不区分是app、fwk层、native，哪里有问题就去改哪里，这样就太有好处了，总算能够更加全面的深入系统。</p>
-<p>​	2023独立完成了SystemUI的整个功能样式的修改，后续又解决后台应用性能优化问题，还是有一些成就感，2024努力，努力，再努力。</p>
+  </div><article class="md-text content"><h1 id="广播日志分析"><a href="#广播日志分析" class="headerlink" title="广播日志分析"></a>广播日志分析</h1><p>行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent.action.SCREEN_OFF&#x2F;u-1} from uid 1000 pid 965 for 57 receivers</p>
+<p>这里的57 receivers代表是什么东西？</p>
+<p>这是Android操作系统中的一个日志条目，它描述了一个名为<code>BroadcastRecord</code>的对象的状态。下面是对这个日志条目的解释：</p>
+<ul>
+<li><code>Enqueuing</code>: 这个词意味着一个事件被放入了队列中，等待处理。</li>
+<li><code>BroadcastRecord</code>: 这是一个Android中用于广播事件的类。当应用程序发送一个广播，系统会创建一个<code>BroadcastRecord</code>对象来处理这个广播。</li>
+<li><code>&#123;e6067ba android.intent.action.SCREEN_OFF/u-1&#125;</code>: 这部分是<code>BroadcastRecord</code>对象的详细信息。<ul>
+<li><code>e6067ba</code>: 这可能是一个对象的内存地址或者是一个唯一标识符。</li>
+<li><code>android.intent.action.SCREEN_OFF</code>: 这是一个特定的动作，表示屏幕关闭的事件。当用户关闭屏幕时，系统会发送这个广播。</li>
+<li><code>/u-1</code>: 这可能指的是用户ID为-1，通常表示这是一个系统级别的广播。</li>
+</ul>
+</li>
+<li><code>from uid 1000 pid 965</code>: 这表示广播是由用户ID为1000，进程ID为965的应用程序或服务发送的。</li>
+<li><code>for 57 receivers</code>: 这意味着有57个接收器（receivers）注册了对这个特定广播的监听，并将接收这个事件。</li>
+</ul>
+<p>总的来说，这条日志记录了系统在处理一个屏幕关闭事件的广播，该广播是由用户ID为1000，进程ID为965的应用程序或服务发送的，并且有57个接收器将会接收到这个事件。这通常用于调试或监控系统事件。</p>
+<hr>
+<p>Add broadcast &lt;BroadcastRecord{263938f u-1 android.intent.action.SCREEN_OFF}&gt; into [ordered | foreground], pending size 0</p>
+<p>这条日志条目提供了有关Android系统中广播队列状态的信息。下面是对这条日志条目的详细解释：</p>
+<ul>
+<li><p><code>Add broadcast</code>: 这表明一个广播事件被添加到了系统中的广播队列。</p>
+</li>
+<li><p><code>&lt;BroadcastRecord&#123;263938f u-1 android.intent.action.SCREEN_OFF&#125;&gt;</code>: 这是被添加到队列中的广播记录对象的具体信息。</p>
+<ul>
+<li><code>263938f</code>: 这可能是广播记录对象的内存地址或唯一标识符。</li>
+<li><code>u-1</code>: 这通常表示广播是发送给所有用户的，<code>u-1</code>代表用户ID为-1，通常用于系统级别的广播。</li>
+<li><code>android.intent.action.SCREEN_OFF</code>: 这是广播的Action，表明这是一个屏幕关闭的广播，即当设备屏幕关闭时触发。</li>
+</ul>
+</li>
+<li><p><code>into [ordered | foreground]</code>: 这部分说明了广播被添加到队列的方式。</p>
+<ul>
+<li><code>ordered</code>: 表示广播是有序的，即它们将按照接收器注册的顺序被处理。<ul>
+<li><code>foreground</code>: 表示广播是前台广播，这意味着它将在前台进程中被处理，通常具有更高的优先级。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>pending size 0</code>: 这表示当前没有待处理的广播。<code>pending</code>指的是等待被处理的广播数量，<code>size 0</code>意味着队列中没有其他广播等待处理，当前添加的广播将是下一个被处理的。</p>
+</li>
+</ul>
+<p>综上所述，这条日志条目表明一个屏幕关闭的广播事件被添加到了一个有序且前台的广播队列中，并且当前没有其他广播在队列中等待处理。这通常用于调试或监控广播事件的处理情况。</p>
 
 <div class="article-footer fs14">
     <section id="license">
@@ -108,19 +147,18 @@
     <section id="share">
       <div class="header"><span>分享文章</span></div>
       <div class="body">
-        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://yuan19.github.io/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/" /></div>
-        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://yuan19.github.io/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/&title=Android启动流程 - yuan19'Blog&summary=2023年回顾​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。
-​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，..."><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=Android启动流程 - yuan19'Blog&amp;body=https://yuan19.github.io/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
+        <div class="link"><input class="copy-area" readonly="true" id="copy-link" value="https://yuan19.github.io/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/" /></div>
+        <div class="social-wrap dis-select"><a class="social share-item wechat" onclick="util.toggle(&quot;qrcode-wechat&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/b32ef3da1162a.svg" /></a><a class="social share-item weibo" target="_blank" rel="external nofollow noopener noreferrer" href="https://service.weibo.com/share/share.php?url=https://yuan19.github.io/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/&title=广播日志分析 - yuan19'Blog&summary=广播日志分析行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent..."><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/80c07e4dbb303.svg" /></a><a class="social share-item email" href="mailto:?subject=广播日志分析 - yuan19'Blog&amp;body=https://yuan19.github.io/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/a1b00e20f425d.svg" /></a><a class="social share-item link" onclick="util.copy(&quot;copy-link&quot;, &quot;复制成功&quot;)"><img class="lazy"  src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://gcore.jsdelivr.net/gh/cdn-x/placeholder@1.0.12/social/8411ed322ced6.svg" /></a></div>
         
         <div class="qrcode" id="qrcode-wechat" style="opacity:0;height:0">
-          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://yuan19.github.io/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/"/>
+          <img class="lazy" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAABGdBTUEAALGPC/xhBQAAADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAAAaADAAQAAAABAAAAAQAAAADa6r/EAAAAC0lEQVQIHWNgAAIAAAUAAY27m/MAAAAASUVORK5CYII=" data-src="https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=https://yuan19.github.io/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/"/>
         </div>
         
       </div>
     </section>
     </div>
 </article>
-<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"><div class="note">较新文章</div><a href="/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/">Android启动流程</a></div><div class="item" id="next"></div></section></div>
+<div class="related-wrap" id="read-next"><section class="body"><div class="item" id="prev"></div><div class="item" id="next"><div class="note">较早文章</div><a href="/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/">std::lock_guard 用法</a></div></section></div>
 
 
 
@@ -153,7 +191,7 @@
 
 
 
-<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#2023%E5%B9%B4%E5%9B%9E%E9%A1%BE"><span class="toc-text">2023年回顾</span></a></li></ol></div><div class="widget-footer">
+<widget class="widget-wrapper toc" id="data-toc" collapse="false"><div class="widget-header dis-select"><span class="name">本文目录</span><a class="cap-action" onclick="sidebar.toggleTOC()" ><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6h11m-11 6h11m-11 6h11M4 6h1v4m-1 0h2m0 8H4c0-1 2-2 2-3s-1-1.5-2-1"/></svg></a></div><div class="widget-body"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90"><span class="toc-text">广播日志分析</span></a></li></ol></div><div class="widget-footer">
 
 <a class="top" onclick="util.scrollTop()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12c0-4.714 0-7.071 1.464-8.536C4.93 2 7.286 2 12 2c4.714 0 7.071 0 8.535 1.464C22 4.93 22 7.286 22 12c0 4.714 0 7.071-1.465 8.535C19.072 22 16.714 22 12 22s-7.071 0-8.536-1.465C2 19.072 2 16.714 2 12Z"/><path stroke-linecap="round" stroke-linejoin="round" d="m9 15.5l3-3l3 3m-6-4l3-3l3 3"/></g></svg><span>回到顶部</span></a><a class="buttom" onclick="util.scrollComment()"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"><path fill="currentColor" fill-rule="evenodd" d="M10.46 1.25h3.08c1.603 0 2.86 0 3.864.095c1.023.098 1.861.3 2.6.752a5.75 5.75 0 0 1 1.899 1.899c.452.738.654 1.577.752 2.6c.095 1.004.095 2.261.095 3.865v1.067c0 1.141 0 2.036-.05 2.759c-.05.735-.153 1.347-.388 1.913a5.75 5.75 0 0 1-3.112 3.112c-.805.334-1.721.408-2.977.43a10.81 10.81 0 0 0-.929.036c-.198.022-.275.054-.32.08c-.047.028-.112.078-.224.232c-.121.166-.258.396-.476.764l-.542.916c-.773 1.307-2.69 1.307-3.464 0l-.542-.916a10.605 10.605 0 0 0-.476-.764c-.112-.154-.177-.204-.224-.232c-.045-.026-.122-.058-.32-.08c-.212-.023-.49-.03-.93-.037c-1.255-.021-2.171-.095-2.976-.429A5.75 5.75 0 0 1 1.688 16.2c-.235-.566-.338-1.178-.389-1.913c-.049-.723-.049-1.618-.049-2.76v-1.066c0-1.604 0-2.86.095-3.865c.098-1.023.3-1.862.752-2.6a5.75 5.75 0 0 1 1.899-1.899c.738-.452 1.577-.654 2.6-.752C7.6 1.25 8.857 1.25 10.461 1.25M6.739 2.839c-.914.087-1.495.253-1.959.537A4.25 4.25 0 0 0 3.376 4.78c-.284.464-.45 1.045-.537 1.96c-.088.924-.089 2.11-.089 3.761v1c0 1.175 0 2.019.046 2.685c.045.659.131 1.089.278 1.441a4.25 4.25 0 0 0 2.3 2.3c.515.214 1.173.294 2.429.316h.031c.398.007.747.013 1.037.045c.311.035.616.104.909.274c.29.17.5.395.682.645c.169.232.342.525.538.856l.559.944a.52.52 0 0 0 .882 0l.559-.944c.196-.331.37-.624.538-.856c.182-.25.392-.476.682-.645c.293-.17.598-.24.909-.274c.29-.032.639-.038 1.037-.045h.032c1.255-.022 1.913-.102 2.428-.316a4.25 4.25 0 0 0 2.3-2.3c.147-.352.233-.782.278-1.441c.046-.666.046-1.51.046-2.685v-1c0-1.651 0-2.837-.089-3.762c-.087-.914-.253-1.495-.537-1.959a4.25 4.25 0 0 0-1.403-1.403c-.464-.284-1.045-.45-1.96-.537c-.924-.088-2.11-.089-3.761-.089h-3c-1.651 0-2.837 0-3.762.089" clip-rule="evenodd"/><path fill="currentColor" d="M9 11a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0m4 0a1 1 0 1 1-2 0a1 1 0 0 1 2 0"/></svg><span>参与讨论</span></a></div></widget>
 </div></aside><div class='float-panel blur'>
