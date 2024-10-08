@@ -284,7 +284,7 @@
 <h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
 <li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
 </ul>
-<style>.ukdxrbbfcssr{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="ukdxrbbfcssr" alt="img">
+<style>.fwurcvvkqfkx{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="fwurcvvkqfkx" alt="img">
 
 <ul>
 <li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
@@ -431,6 +431,93 @@
       </categories>
       <tags>
         <tag>C/C++基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>android日志相关</title>
+    <url>/2024/10/08/android%E6%97%A5%E5%BF%97%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h1 id="android日志相关"><a href="#android日志相关" class="headerlink" title="android日志相关"></a>android日志相关</h1><h2 id="一、Log-isLoggable"><a href="#一、Log-isLoggable" class="headerlink" title="一、Log.isLoggable"></a>一、Log.isLoggable</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">DEBUG_LOG</span> <span class="operator">=</span> Log.isLoggable(<span class="string">&quot;CallController&quot;</span>, Log.DEBUG);</span><br></pre></td></tr></table></figure>
+
+<p>1、机器重启后失效</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop log.tag.CallController D</span><br><span class="line">#重新启动system_server</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+
+<p>2、机器重启仍生效</p>
+<p>添加persist关键字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop persist.log.log.tag.CallController D</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、ProtoLog"><a href="#二、ProtoLog" class="headerlink" title="二、ProtoLog"></a>二、ProtoLog</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ProtoLog.v(WM_DEBUG_ORIENTATION, <span class="string">&quot;Disabling listeners&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>ProtoLog是为WindowManager设计的，ProtoLog的命令也集成在内。</p>
+<p><code>wm logging与cmd window logging，这两个指令等价。</code></p>
+<p>ProtoLog有两种日志输出的方式：</p>
+<h3 id="1、winscope方式"><a href="#1、winscope方式" class="headerlink" title="1、winscope方式"></a>1、winscope方式</h3><h4 id="1-1、日志获取"><a href="#1-1、日志获取" class="headerlink" title="1.1、日志获取"></a>1.1、日志获取</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>名称&#x2F;命令</strong></th>
+<th align="left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">wm logging enable&#x2F;disable [group…]</td>
+<td align="left">按照groups启停ProtoLog，真正启动是start命令，调用start命令之后才输出</td>
+</tr>
+<tr>
+<td align="left">wm logging start</td>
+<td align="left">start proto logging 开始Proto log输出，让你enable的Group生效；输出到Logcat时不需要start</td>
+</tr>
+<tr>
+<td align="left">wm logging stop</td>
+<td align="left">stop proto logging</td>
+</tr>
+</tbody></table>
+<p>例如打开WM_DEBUG_ORIENTATION日志</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">D:\Program Files (x86)\Mobatek\home&gt; adb shell</span><br><span class="line"></span><br><span class="line">AEOP522:/ # wm logging enable WM_DEBUG_ORIENTATION</span><br><span class="line">AEOP522:/ # wm logging start</span><br><span class="line">Start logging to /data/cache/wmtrace/wm_log.winscope.</span><br><span class="line">AEOP522:/ # wm logging stop</span><br><span class="line">Stop logging to /data/cache/wmtrace/wm_log.winscope. Waiting for log to flush.</span><br><span class="line">Log written to /data/cache/wmtrace/wm_log.winscope.</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、日志分析"><a href="#1-2、日志分析" class="headerlink" title="1.2、日志分析"></a>1.2、日志分析</h4><p>得到winscope文件，adb pull &#x2F;data&#x2F;cache&#x2F;wmtrace&#x2F;wm_log.winscope，有两种方式解析分析</p>
+<ul>
+<li>&#x2F;prebuilts&#x2F;misc&#x2F;common&#x2F;winscope&#x2F;运行用chrome运行winscope.html分析</li>
+<li>利用protologtool分析</li>
+</ul>
+<p><strong>参考链接</strong></p>
+<p><a href="https://blog.csdn.net/realDonaldTrump/article/details/126095631">Android动态日志ProtoLog简介和使用</a></p>
+<p><a href="https://blog.csdn.net/learnframework/article/details/129432374">android车机手机黑屏闪黑终结者-Winscope工具使用介绍</a></p>
+<h3 id="2、Logcat方式"><a href="#2、Logcat方式" class="headerlink" title="2、Logcat方式"></a>2、Logcat方式</h3><table>
+<thead>
+<tr>
+<th><strong>名称&#x2F;命令</strong></th>
+<th><strong>名称&#x2F;命令</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wm logging enable-text&#x2F;disable-text [group…]</td>
+<td>启停动态日志，输出到logcat，不需要调用start命令就会开始输出</td>
+</tr>
+</tbody></table>
+<p>例如打开WM_DEBUG_ORIENTATION日志</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell wm logging enable-text WM_DEBUG_ORIENTATION</span><br><span class="line"></span><br><span class="line">adb logcat -b all |grep -i WindowManager</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="三、LogBuffer"><a href="#三、LogBuffer" class="headerlink" title="三、LogBuffer"></a>三、LogBuffer</h2><p>SystemUI有一个LogBuffer类，用于动态输出日志。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NotificationInterruptLogger</span> <span class="meta">@Inject</span> constructor(</span><br><span class="line">    <span class="meta">@NotificationInterruptLog</span> val buffer: LogBuffer</span><br><span class="line">) &#123;</span><br><span class="line">    fun <span class="title function_">logHeadsUp</span><span class="params">(entry: NotificationEntry)</span> &#123;</span><br><span class="line">        buffer.log(TAG, DEBUG, &#123;</span><br><span class="line">            str1 = entry.logKey</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">            <span class="string">&quot;Heads up: $str1&quot;</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> const <span class="type">val</span> <span class="variable">TAG</span> <span class="operator">=</span> <span class="string">&quot;InterruptionStateProvider&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>设置方式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell settings put global systemui/tag/InterruptionStateProvider v</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、Logcat"><a href="#四、Logcat" class="headerlink" title="四、Logcat"></a>四、Logcat</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取普通的andorid <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅抓取events <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b events &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取所有类型<span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b all &gt; log.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据关键字抓取<span class="built_in">log</span>，-i可以忽略大小，-e可以添加多条关键字，如下：</span></span><br><span class="line">adb shell logcat -b events | grep -ie &quot;关键log1&quot; -ie &quot;关键log2&quot;&gt; log.txt</span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>framework</tag>
       </tags>
   </entry>
   <entry>
