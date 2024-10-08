@@ -15,40 +15,6 @@
       </tags>
   </entry>
   <entry>
-    <title>Android ATMS应用启动流程</title>
-    <url>/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
-    <content><![CDATA[<h1 id="Android-ATMS应用启动流程"><a href="#Android-ATMS应用启动流程" class="headerlink" title="Android ATMS应用启动流程"></a>Android ATMS应用启动流程</h1><h2 id="1、Activity启动流程图"><a href="#1、Activity启动流程图" class="headerlink" title="1、Activity启动流程图"></a>1、Activity启动流程图</h2><p>大概流程图，在每个版本中流程都有一些出入，但整体大概流程还是有很多相同之处。</p>
-<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930113952845.png" class="" title="image-20240930113952845">
-
-<p>后续ActivityStackSupervisor处理启动activity请求会把该请求封装成一个ClientTransaction，然后执行Activity对应操作时就向ClientTransaction添加对应的XXActivityItem。而ActivityThread是ClientTransaction的处理者，继承了ClientTransactionHandler，根据XXActivityItem调用handleXXActivity，去执行activity的启动、onResume等生命周期活动。</p>
-<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930114000254.png" class="" title="image-20240930114000254">
-
-<h2 id="2、ClientTransaction数据结构"><a href="#2、ClientTransaction数据结构" class="headerlink" title="2、ClientTransaction数据结构"></a>2、ClientTransaction数据结构</h2><img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/AMS%E6%B5%81%E7%A8%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" class="" title="AMS流程数据结构">
-
-<p>ClientTransaction包含的数据</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>、<span class="keyword">private</span> List&lt;ClientTransactionItem&gt; mActivityCallbacks;</span><br><span class="line">保存需要传递的ClientTtransactionItem.比如：PauseActivityItem</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、<span class="keyword">private</span> ActivityLifecycleItem mLifecycleStateRequest</span><br><span class="line">下一个需要执行的ActivityLifecycleItem值</span><br><span class="line"></span><br><span class="line"><span class="number">3</span>、<span class="keyword">private</span> IApplicationThread mClient</span><br><span class="line">应用的Client对象</span><br><span class="line"></span><br><span class="line"><span class="number">4</span>、<span class="keyword">private</span> IBinder mActivityToken</span><br><span class="line">当前Activity的token值</span><br></pre></td></tr></table></figure>
-
-<p>如执行的ResumeActivityItem</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ResumeActivityItem.java</span></span><br><span class="line"><span class="comment">// 实现Resume的方法执行：client.handleResumeActivity</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(ClientTransactionHandler client, ActivityClientRecord r,</span></span><br><span class="line"><span class="params">            PendingTransactionActions pendingActions)</span> &#123;</span><br><span class="line">        Trace.traceBegin(TRACE_TAG_ACTIVITY_MANAGER, <span class="string">&quot;activityResume&quot;</span>);</span><br><span class="line">        client.handleResumeActivity(r, <span class="literal">true</span> <span class="comment">/* finalStateRequest */</span>, mIsForward,</span><br><span class="line">                mShouldSendCompatFakeFocus, <span class="string">&quot;RESUME_ACTIVITY&quot;</span>);</span><br><span class="line">        Trace.traceEnd(TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-
-<h2 id="3、Acttivity-token流程"><a href="#3、Acttivity-token流程" class="headerlink" title="3、Acttivity token流程"></a>3、Acttivity token流程</h2><p>关注完系统进程与应用进程的数据ClientTransaction交互，接下来就是token的流程</p>
-<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/token%E6%B5%81%E7%A8%8B.png" class="" title="Acttivity token流程">
-
-
-
-<p>参考文章：</p>
-<p><a href="https://blog.csdn.net/weixin_41939525/article/details/126178948">Android—ATMS应用启动流程</a></p>
-<p><a href="https://blog.csdn.net/qq_27481249/article/details/116015635">Android AMS(ATMS)的应用启动流程解析</a></p>
-]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>Android</tag>
-        <tag>framework</tag>
-      </tags>
-  </entry>
-  <entry>
     <title>Android启动流程</title>
     <url>/2024/09/26/Android%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="Android启动流程"><a href="#Android启动流程" class="headerlink" title="Android启动流程"></a>Android启动流程</h1><p><a href="http://aospxref.com/android-14.0.0_r2/xref/">Android源码基于14</a></p>
@@ -259,6 +225,40 @@
       </tags>
   </entry>
   <entry>
+    <title>Android ATMS应用启动流程</title>
+    <url>/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
+    <content><![CDATA[<h1 id="Android-ATMS应用启动流程"><a href="#Android-ATMS应用启动流程" class="headerlink" title="Android ATMS应用启动流程"></a>Android ATMS应用启动流程</h1><h2 id="1、Activity启动流程图"><a href="#1、Activity启动流程图" class="headerlink" title="1、Activity启动流程图"></a>1、Activity启动流程图</h2><p>大概流程图，在每个版本中流程都有一些出入，但整体大概流程还是有很多相同之处。</p>
+<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930113952845.png" class="" title="image-20240930113952845">
+
+<p>后续ActivityStackSupervisor处理启动activity请求会把该请求封装成一个ClientTransaction，然后执行Activity对应操作时就向ClientTransaction添加对应的XXActivityItem。而ActivityThread是ClientTransaction的处理者，继承了ClientTransactionHandler，根据XXActivityItem调用handleXXActivity，去执行activity的启动、onResume等生命周期活动。</p>
+<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/image-20240930114000254.png" class="" title="image-20240930114000254">
+
+<h2 id="2、ClientTransaction数据结构"><a href="#2、ClientTransaction数据结构" class="headerlink" title="2、ClientTransaction数据结构"></a>2、ClientTransaction数据结构</h2><img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/AMS%E6%B5%81%E7%A8%8B%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84.png" class="" title="AMS流程数据结构">
+
+<p>ClientTransaction包含的数据</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="number">1</span>、<span class="keyword">private</span> List&lt;ClientTransactionItem&gt; mActivityCallbacks;</span><br><span class="line">保存需要传递的ClientTtransactionItem.比如：PauseActivityItem</span><br><span class="line"></span><br><span class="line"><span class="number">2</span>、<span class="keyword">private</span> ActivityLifecycleItem mLifecycleStateRequest</span><br><span class="line">下一个需要执行的ActivityLifecycleItem值</span><br><span class="line"></span><br><span class="line"><span class="number">3</span>、<span class="keyword">private</span> IApplicationThread mClient</span><br><span class="line">应用的Client对象</span><br><span class="line"></span><br><span class="line"><span class="number">4</span>、<span class="keyword">private</span> IBinder mActivityToken</span><br><span class="line">当前Activity的token值</span><br></pre></td></tr></table></figure>
+
+<p>如执行的ResumeActivityItem</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// ResumeActivityItem.java</span></span><br><span class="line"><span class="comment">// 实现Resume的方法执行：client.handleResumeActivity</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">execute</span><span class="params">(ClientTransactionHandler client, ActivityClientRecord r,</span></span><br><span class="line"><span class="params">            PendingTransactionActions pendingActions)</span> &#123;</span><br><span class="line">        Trace.traceBegin(TRACE_TAG_ACTIVITY_MANAGER, <span class="string">&quot;activityResume&quot;</span>);</span><br><span class="line">        client.handleResumeActivity(r, <span class="literal">true</span> <span class="comment">/* finalStateRequest */</span>, mIsForward,</span><br><span class="line">                mShouldSendCompatFakeFocus, <span class="string">&quot;RESUME_ACTIVITY&quot;</span>);</span><br><span class="line">        Trace.traceEnd(TRACE_TAG_ACTIVITY_MANAGER);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="3、Acttivity-token流程"><a href="#3、Acttivity-token流程" class="headerlink" title="3、Acttivity token流程"></a>3、Acttivity token流程</h2><p>关注完系统进程与应用进程的数据ClientTransaction交互，接下来就是token的流程</p>
+<img src="/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/token%E6%B5%81%E7%A8%8B.png" class="" title="Acttivity token流程">
+
+
+
+<p>参考文章：</p>
+<p><a href="https://blog.csdn.net/weixin_41939525/article/details/126178948">Android—ATMS应用启动流程</a></p>
+<p><a href="https://blog.csdn.net/qq_27481249/article/details/116015635">Android AMS(ATMS)的应用启动流程解析</a></p>
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>framework</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Binder原理浅析</title>
     <url>/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/</url>
     <content><![CDATA[<h1 id="Binder原理浅析"><a href="#Binder原理浅析" class="headerlink" title="Binder原理浅析"></a>Binder原理浅析</h1><h2 id="一、Binder优势"><a href="#一、Binder优势" class="headerlink" title="一、Binder优势"></a>一、Binder优势</h2><table>
@@ -284,7 +284,7 @@
 <h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
 <li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
 </ul>
-<style>.fwurcvvkqfkx{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="fwurcvvkqfkx" alt="img">
+<style>.econipfomczi{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="econipfomczi" alt="img">
 
 <ul>
 <li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
@@ -554,6 +554,18 @@
       </categories>
       <tags>
         <tag>C/C++基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>又又又开户了</title>
+    <url>/2024/10/07/%E5%8F%88%E5%8F%88%E5%8F%88%E5%BC%80%E6%88%B7%E4%BA%86/</url>
+    <content><![CDATA[<h1 id="又又又开户了"><a href="#又又又开户了" class="headerlink" title="又又又开户了"></a>又又又开户了</h1><p>多年前的韭菜，现在又重新开户了，我胡汉三又回来了(^o^)&#x2F;</p>
+]]></content>
+      <categories>
+        <category>生活杂谈</category>
+      </categories>
+      <tags>
+        <tag>股票</tag>
       </tags>
   </entry>
   <entry>
