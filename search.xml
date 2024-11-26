@@ -1,6 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>2023年回顾</title>
+    <url>/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/</url>
+    <content><![CDATA[<h1 id="2023年回顾"><a href="#2023年回顾" class="headerlink" title="2023年回顾"></a>2023年回顾</h1><p>​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。</p>
+<p>​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不区分是app、fwk层、native，哪里有问题就去改哪里，这样就太有好处了，总算能够更加全面的深入系统。</p>
+<p>​	2023独立完成了SystemUI的整个功能样式的修改，后续又解决后台应用性能优化问题，还是有一些成就感，2024努力，努力，再努力。</p>
+]]></content>
+      <categories>
+        <category>生活杂谈</category>
+      </categories>
+      <tags>
+        <tag>总结</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Android ATMS应用启动流程</title>
     <url>/2024/09/26/Android%20ATMS%E5%BA%94%E7%94%A8%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/</url>
     <content><![CDATA[<h1 id="Android-ATMS应用启动流程"><a href="#Android-ATMS应用启动流程" class="headerlink" title="Android ATMS应用启动流程"></a>Android ATMS应用启动流程</h1><h2 id="1、Activity启动流程图"><a href="#1、Activity启动流程图" class="headerlink" title="1、Activity启动流程图"></a>1、Activity启动流程图</h2><p>大概流程图，在每个版本中流程都有一些出入，但整体大概流程还是有很多相同之处。</p>
@@ -32,383 +46,6 @@
       <tags>
         <tag>Android</tag>
         <tag>framework</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>2023年回顾</title>
-    <url>/2024/01/01/2023%E5%B9%B4%E5%9B%9E%E9%A1%BE/</url>
-    <content><![CDATA[<h1 id="2023年回顾"><a href="#2023年回顾" class="headerlink" title="2023年回顾"></a>2023年回顾</h1><p>​	2023年从奇酷离职，换了现在的公司。在奇酷待了5年，想起进公司之前，老同事积极内推我进奇酷，想想还是很感激以前的老同事。前路漫漫，一起共勉。</p>
-<p>​	这几年从系统应用慢慢的转向fwk开发，负责几个fwk模块的开发内容，也一直在重新梳理fwk的技术点，Reading the fuck  source code。来到新公司后，又开始从事新的模块SystemUI，也同时修改fwk，公司不区分是app、fwk层、native，哪里有问题就去改哪里，这样就太有好处了，总算能够更加全面的深入系统。</p>
-<p>​	2023独立完成了SystemUI的整个功能样式的修改，后续又解决后台应用性能优化问题，还是有一些成就感，2024努力，努力，再努力。</p>
-]]></content>
-      <categories>
-        <category>生活杂谈</category>
-      </categories>
-      <tags>
-        <tag>总结</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>C++双冒号::的作用</title>
-    <url>/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/</url>
-    <content><![CDATA[<h3 id="全局命名空间"><a href="#全局命名空间" class="headerlink" title="全局命名空间"></a>全局命名空间</h3><p>全局命名空间是一个包含所有全局变量、函数和类型的<span style="color: #ff0000;">隐式命名空间</span>。如果想要在一个局部作用域内访问全局作用域的实体，可以使用双冒号<code>::</code>。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> var = <span class="number">10</span>; <span class="comment">// global variable</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> var = <span class="number">20</span>; <span class="comment">// local variable</span></span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Global var: &quot;</span> &lt;&lt; ::var &lt;&lt; std::endl; <span class="comment">// 全局参数var</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Local var: &quot;</span> &lt;&lt; var &lt;&lt; std::endl; <span class="comment">// 局部参数var </span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> zhou; <span class="comment">//全局变量 </span></span><br><span class="line"><span class="type">void</span> sleep（） </span><br><span class="line">｛ </span><br><span class="line"><span class="type">char</span> zhou; <span class="comment">//局部变量 </span></span><br><span class="line"><span class="built_in">char</span>(局部变量) = <span class="built_in">char</span>(局部变量) *<span class="built_in">char</span>(局部变量) ; </span><br><span class="line">::<span class="built_in">char</span>(全局变量) =::<span class="built_in">char</span>(全局变量) *<span class="built_in">char</span>(局部变量); </span><br><span class="line">｝ </span><br></pre></td></tr></table></figure>
-
-<p><span style="color: #4d4d4d;">上述代码中，全局变量和局部变量同名。通过</span><code>::</code><span style="color: #4d4d4d;">运算符，我们可以明确地引用全局变量。</span></p>
-<p>&nbsp;</p>
-<h3 id="类成员访问"><a href="#类成员访问" class="headerlink" title="类成员访问"></a>类成员访问</h3><p>在C++中，双冒号<code>::</code>也用于访问类的<span style="color: #ff0000;">静态成员</span>。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> static_var;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">static_function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Static function&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> MyClass::static_var = <span class="number">10</span>; <span class="comment">// define static member outside the class</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Static var: &quot;</span> &lt;&lt; MyClass::static_var &lt;&lt; std::endl;</span><br><span class="line">    MyClass::<span class="built_in">static_function</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><span style="color: #4d4d4d;">在上述代码中，</span><code>::</code><span style="color: #4d4d4d;">被用来访问类的静态成员。注意静态成员需要在类外部定义。</span></p>
-<p>&nbsp;</p>
-<h3 id="命名空间访问"><a href="#命名空间访问" class="headerlink" title="命名空间访问"></a>命名空间访问</h3><p>双冒号<code>::</code>还被用于明确指定某个命名空间中的实体。</p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> MyNamespace &#123;</span><br><span class="line">    <span class="type">int</span> var = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Function in namespace&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&lt;span style=<span class="string">&quot;color: #7f7f7f&quot;</span>&gt;指定某个命名空间中的实体&lt;/span&gt;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="built_in">main</span>() &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Var: &quot;</span> &lt;&lt; MyNamespace::var &lt;&lt; std::endl;</span><br><span class="line">    MyNamespace::<span class="built_in">function</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><span style="color: #4d4d4d;">在上述代码中，</span><code>::</code><span style="color: #4d4d4d;">被用来访问特定命名空间中的变量和函数。</span></p>
-<p>&nbsp;</p>
-<h3 id="解决名称冲突"><a href="#解决名称冲突" class="headerlink" title="解决名称冲突"></a>解决名称冲突</h3><p>.<span style="color: #4d4d4d;">双冒号</span><code>::</code><span style="color: #4d4d4d;">还可以用于解决名称冲突，例如当使用了相同名称的两个库时。</span></p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> Library1 &#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Print from Library1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> Library2 &#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Print from Library2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Library1::<span class="built_in">print</span>();</span><br><span class="line">    Library2::<span class="built_in">print</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<h3 id="类方法定义"><a href="#类方法定义" class="headerlink" title="类方法定义"></a>类方法定义</h3><p><span style="color: #4d4d4d;"><span style="color: #4d4d4d;">前面一般是类名称，后面一般是该类的成员名称，C++为例避免不同的类有名称相同的成员而采用作用域的方式进行区分</span><br><span style="color: #4d4d4d;">如：A,B表示两个类，在A,B中都有成员member。那么</span><br><span style="color: #4d4d4d;">A::member就表示类A中的成员member</span><br><span style="color: #4d4d4d;">B::member就表示类B中的成员member</span></span></p>
-<p><span style="color: #4d4d4d;">比如声明了一个类A，类A里声明了一个成员函数voidf()，但没有在类的声明里给出f的定义，那么在类外定义f时，就要写成voidA::f()，表示这个f()函数是类A的成员函数。例如</span></p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CA</span> &#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">  <span class="type">int</span> ca_var;  </span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span>;  </span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a)</span></span>;  </span><br><span class="line">&#125;; </span><br><span class="line">  </span><br><span class="line"><span class="comment">//那么在实现这个函数时，必须这样书写：  </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">CA::add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">return</span> a + b;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">//另外，双冒号也常常用于在类变量内部作为当前类实例的元素进行表示，比如:  </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">CA::add</span><span class="params">(<span class="type">int</span> a)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">return</span> a + ::ca_var;  </span><br><span class="line">&#125; </span><br><span class="line">  </span><br><span class="line"><span class="comment">//表示当前类实例中的变量ca_var。</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="模板类中的双冒号"><a href="#模板类中的双冒号" class="headerlink" title="模板类中的双冒号"></a>模板类中的双冒号</h3><p><span style="color: #4d4d4d;">在模板类中，双冒号用于访问基础模板类的成员。</span></p>
-<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    T var;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MyClass</span>(T x) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;var = x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span>&lt;<span class="type">int</span>&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> var;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MyClass</span>(<span class="type">int</span> x) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;var = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print_base_var</span><span class="params">(MyClass&lt;<span class="type">double</span>&gt;&amp; base_obj)</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Base var: &quot;</span> &lt;&lt; base_obj.MyClass&lt;<span class="type">double</span>&gt;::var &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><span style="color: #4d4d4d;">在上述代码中，特化的模板类</span><code>MyClass&lt;int&gt;</code><span style="color: #4d4d4d;">使用</span><code>::</code><span style="color: #4d4d4d;">来访问基础模板类</span><code>MyClass&lt;double&gt;</code><span style="color: #4d4d4d;">的成员。</span></p>
-<p>&nbsp;</p>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C/C++基础</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>android日志相关</title>
-    <url>/2024/10/08/android%E6%97%A5%E5%BF%97%E7%9B%B8%E5%85%B3/</url>
-    <content><![CDATA[<h1 id="android日志相关"><a href="#android日志相关" class="headerlink" title="android日志相关"></a>android日志相关</h1><h2 id="一、Log-isLoggable"><a href="#一、Log-isLoggable" class="headerlink" title="一、Log.isLoggable"></a>一、Log.isLoggable</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">DEBUG_LOG</span> <span class="operator">=</span> Log.isLoggable(<span class="string">&quot;CallController&quot;</span>, Log.DEBUG);</span><br></pre></td></tr></table></figure>
-
-<p>1、机器重启后失效</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop log.tag.CallController D</span><br><span class="line">#重新启动system_server</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
-
-<p>2、机器重启仍生效</p>
-<p>添加persist关键字</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop persist.log.log.tag.CallController D</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="二、ProtoLog"><a href="#二、ProtoLog" class="headerlink" title="二、ProtoLog"></a>二、ProtoLog</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ProtoLog.v(WM_DEBUG_ORIENTATION, <span class="string">&quot;Disabling listeners&quot;</span>);</span><br></pre></td></tr></table></figure>
-
-<p>ProtoLog是为WindowManager设计的，ProtoLog的命令也集成在内。</p>
-<p><code>wm logging与cmd window logging，这两个指令等价。</code></p>
-<p>ProtoLog有两种日志输出的方式：</p>
-<h3 id="1、winscope方式"><a href="#1、winscope方式" class="headerlink" title="1、winscope方式"></a>1、winscope方式</h3><h4 id="1-1、日志获取"><a href="#1-1、日志获取" class="headerlink" title="1.1、日志获取"></a>1.1、日志获取</h4><table>
-<thead>
-<tr>
-<th align="left"><strong>名称&#x2F;命令</strong></th>
-<th align="left"><strong>描述</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">wm logging enable&#x2F;disable [group…]</td>
-<td align="left">按照groups启停ProtoLog，真正启动是start命令，调用start命令之后才输出</td>
-</tr>
-<tr>
-<td align="left">wm logging start</td>
-<td align="left">start proto logging 开始Proto log输出，让你enable的Group生效；输出到Logcat时不需要start</td>
-</tr>
-<tr>
-<td align="left">wm logging stop</td>
-<td align="left">stop proto logging</td>
-</tr>
-</tbody></table>
-<p>例如打开WM_DEBUG_ORIENTATION日志</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">D:\Program Files (x86)\Mobatek\home&gt; adb shell</span><br><span class="line"></span><br><span class="line">AEOP522:/ # wm logging enable WM_DEBUG_ORIENTATION</span><br><span class="line">AEOP522:/ # wm logging start</span><br><span class="line">Start logging to /data/cache/wmtrace/wm_log.winscope.</span><br><span class="line">AEOP522:/ # wm logging stop</span><br><span class="line">Stop logging to /data/cache/wmtrace/wm_log.winscope. Waiting for log to flush.</span><br><span class="line">Log written to /data/cache/wmtrace/wm_log.winscope.</span><br></pre></td></tr></table></figure>
-
-<h4 id="1-2、日志分析"><a href="#1-2、日志分析" class="headerlink" title="1.2、日志分析"></a>1.2、日志分析</h4><p>得到winscope文件，adb pull &#x2F;data&#x2F;cache&#x2F;wmtrace&#x2F;wm_log.winscope，有两种方式解析分析</p>
-<ul>
-<li>&#x2F;prebuilts&#x2F;misc&#x2F;common&#x2F;winscope&#x2F;运行用chrome运行winscope.html分析</li>
-<li>利用protologtool分析</li>
-</ul>
-<p><strong>参考链接</strong></p>
-<p><a href="https://blog.csdn.net/realDonaldTrump/article/details/126095631">Android动态日志ProtoLog简介和使用</a></p>
-<p><a href="https://blog.csdn.net/learnframework/article/details/129432374">android车机手机黑屏闪黑终结者-Winscope工具使用介绍</a></p>
-<h3 id="2、Logcat方式"><a href="#2、Logcat方式" class="headerlink" title="2、Logcat方式"></a>2、Logcat方式</h3><table>
-<thead>
-<tr>
-<th><strong>名称&#x2F;命令</strong></th>
-<th><strong>名称&#x2F;命令</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>wm logging enable-text&#x2F;disable-text [group…]</td>
-<td>启停动态日志，输出到logcat，不需要调用start命令就会开始输出</td>
-</tr>
-</tbody></table>
-<p>例如打开WM_DEBUG_ORIENTATION日志</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell wm logging enable-text WM_DEBUG_ORIENTATION</span><br><span class="line"></span><br><span class="line">adb logcat -b all |grep -i WindowManager</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="三、LogBuffer"><a href="#三、LogBuffer" class="headerlink" title="三、LogBuffer"></a>三、LogBuffer</h2><p>SystemUI有一个LogBuffer类，用于动态输出日志。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NotificationInterruptLogger</span> <span class="meta">@Inject</span> constructor(</span><br><span class="line">    <span class="meta">@NotificationInterruptLog</span> val buffer: LogBuffer</span><br><span class="line">) &#123;</span><br><span class="line">    fun <span class="title function_">logHeadsUp</span><span class="params">(entry: NotificationEntry)</span> &#123;</span><br><span class="line">        buffer.log(TAG, DEBUG, &#123;</span><br><span class="line">            str1 = entry.logKey</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">            <span class="string">&quot;Heads up: $str1&quot;</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> const <span class="type">val</span> <span class="variable">TAG</span> <span class="operator">=</span> <span class="string">&quot;InterruptionStateProvider&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>设置方式</p>
-<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell settings put global systemui/tag/InterruptionStateProvider v</span><br></pre></td></tr></table></figure>
-
-
-
-<h2 id="四、Logcat"><a href="#四、Logcat" class="headerlink" title="四、Logcat"></a>四、Logcat</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取普通的andorid <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅抓取events <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b events &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取所有类型<span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b all &gt; log.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据关键字抓取<span class="built_in">log</span>，-i可以忽略大小，-e可以添加多条关键字，如下：</span></span><br><span class="line">adb shell logcat -b events | grep -ie &quot;关键log1&quot; -ie &quot;关键log2&quot;&gt; log.txt</span><br></pre></td></tr></table></figure>
-
-
-]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>Android</tag>
-        <tag>framework</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>Binder原理浅析</title>
-    <url>/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/</url>
-    <content><![CDATA[<h1 id="Binder原理浅析"><a href="#Binder原理浅析" class="headerlink" title="Binder原理浅析"></a>Binder原理浅析</h1><h2 id="一、Binder优势"><a href="#一、Binder优势" class="headerlink" title="一、Binder优势"></a>一、Binder优势</h2><table>
-<thead>
-<tr>
-<th><strong>优势</strong></th>
-<th><strong>描述</strong></th>
-</tr>
-</thead>
-<tbody><tr>
-<td>性能</td>
-<td>一次数据拷贝，mmap内存映射</td>
-</tr>
-<tr>
-<td>稳定性</td>
-<td>基于 C&#x2F;S 架构，架构清晰、职责明确</td>
-</tr>
-<tr>
-<td>安全性</td>
-<td>为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程序通过猜测接收方地址获得连接</td>
-</tr>
-</tbody></table>
-<h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
-<li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
-</ul>
-<style>.ruoeytrwvflv{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="ruoeytrwvflv" alt="img">
-
-<ul>
-<li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
-</ul>
-<h3 id="2-2、Binder通信模型"><a href="#2-2、Binder通信模型" class="headerlink" title="2.2、Binder通信模型"></a>2.2、Binder通信模型</h3><p>Binder由四个组件<strong>Client</strong>、<strong>Server</strong>、<strong>Service Manager</strong>和<strong>Binder驱动程序</strong>组成</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-729b3444cd784d882215a24067893d0e_720w.webp" class="" title="img">
-
-<ol>
-<li>Client、Server和Service Manager实现在用户空间中，Binder驱动程序实现在内核空间中</li>
-<li>Binder驱动程序和Service Manager在Android平台中已经实现，开发者只需要在用户空间实现自己的Client和Server</li>
-<li>Binder驱动程序提供设备文件&#x2F;dev&#x2F;binder与用户空间交互，Client、Server和Service Manager通过open和ioctl文件操作函数与Binder驱动程序进行通信</li>
-<li>Client和Server之间的进程间通信通过Binder驱动程序间接实现</li>
-<li>Service Manager是一个守护进程，用来管理Server，并向Client提供查询Server接口的能力</li>
-</ol>
-<h3 id="2-3、Binder通信过程"><a href="#2-3、Binder通信过程" class="headerlink" title="2.3、Binder通信过程"></a>2.3、Binder通信过程</h3><ol>
-<li>首先，一个进程使用 BINDER_SET_CONTEXT_MGR 命令通过 Binder 驱动将自己注册成为 ServiceManager；</li>
-<li>Server 通过驱动向 ServiceManager 中注册 Binder（Server 中的 Binder 实体），表明可以对外提供服务。驱动为这个 Binder 创建位于内核中的实体节点以及 ServiceManager 对实体的引用，将名字以及新建的引用打包传给 ServiceManager，ServiceManger 将其填入查找表。</li>
-<li>Client 通过名字，在 Binder 驱动的帮助下从 ServiceManager 中获取到对 Binder 实体的引用，通过这个引用就能实现和 Server 进程的通信。</li>
-</ol>
-<p>我们看到整个通信过程都需要 Binder 驱动的接入。下图能更加直观的展现整个通信过程(为了进一步抽象通信过程以及呈现上的方便，下图我们忽略了 Binder 实体及其引用的概念)：</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-67854cdf14d07a6a4acf9d675354e1ff_720w.webp" class="" title="img">
-
-<h3 id="2-4、Binder实现过程"><a href="#2-4、Binder实现过程" class="headerlink" title="2.4、Binder实现过程"></a>2.4、Binder实现过程</h3><h4 id="2-4-1、-实现图解"><a href="#2-4-1、-实现图解" class="headerlink" title="2.4.1、 实现图解"></a>2.4.1、 实现图解</h4><p>client请求service服务，比如说Activity请求Activity ManagerService服务，由于Activity和ActivityManagerService是在两个不同的进程中的，那么下图是一个很直观的请求过程。</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6f1fc5a80tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<p><strong>但是注意</strong>，一个进程是不能直接直接操作另一个进程的，比如说读取另一个进程的数据，或者往另一个进程的内存空间写数据，进程之间的通信要通过内核进程才可以，因此这里就要使用到进程通信工具Binder了如下图：</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e9373ce5tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<p><strong>但是</strong>上面还有个问题就是client和service要直接和binder driver打交道，但是实际上client和service并不想知道binder相关协议，所以进一步client通过添加proxy代理，service通过添加stub来进一步处理与binder的交互。</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e959b77etplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<p>这样的好处是client和service都可以不用直接去和binder打交道。上面的图好像已经很完善了，但是Android系统更进一步封装，不让client知道Binder的存在，Android系统提供了Manager来管理client。如下图：</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed729e2b6e4tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<p>这样client只需要交给manager来管理就好了，根本就不用关心进程通信相关的事，关于manager其实是很熟悉的，比如说activity的就是由ActivityManager来控制的，ActivityManager是通过Binder获取ActivityManagerService来控制activity的。这样就不用我们自己来使用Binder来ActivityManagerService通信了。</p>
-<p>更进一步，client是如何具体获取到哪个service的呢？如下图所示：</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed72270d98etplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<p>在service和binder之间还有一个contextManager，也就是serviceManager，每一个service要先往serviceManager里面进行注册，注册完成之后由serviceManager统一管理。 在Android studio中可以通过adb指定打印出当前已经注册过serviceManager的service。</p>
-<h4 id="2-4-2、实现示例"><a href="#2-4-2、实现示例" class="headerlink" title="2.4.2、实现示例"></a>2.4.2、实现示例</h4><p>示例调用流程如下：</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/5ecf5179cc274c4c8c1e726013ca04d7tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="" title="img">
-
-<h5 id="2-4-2-1-客户端Activity"><a href="#2-4-2-1-客户端Activity" class="headerlink" title="2.4.2.1 客户端Activity"></a>2.4.2.1 客户端Activity</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//NoAidlActivity.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">    <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, MyService.class);</span><br><span class="line"></span><br><span class="line">    bindService(intent, <span class="keyword">new</span> <span class="title class_">ServiceConnection</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> &#123;</span><br><span class="line">            <span class="comment">//1. 从对象池拿到可复用的对象（享元模式）</span></span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;666&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端向服务端发送：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 往data写数据，作为请求参数</span></span><br><span class="line">            data.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 拿到服务端的IBinder句柄，调用transact</span></span><br><span class="line">            <span class="comment">//约定行为码是1；需要服务端的返回值，所以flags传0表示同步调用</span></span><br><span class="line">            service.transact(<span class="number">1</span>, data, reply, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="comment">//4. 从reply读取服务端的返回值</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端接收服务端返回：&quot;</span> + reply.readString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, Context.BIND_AUTO_CREATE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>如上代码，主要查看步骤2与步骤3。写入参数’666’至data，service.transact把data作为参数传递。</p>
-<h5 id="2-4-2-2-服务端运行的Service"><a href="#2-4-2-2-服务端运行的Service" class="headerlink" title="2.4.2.2 服务端运行的Service"></a>2.4.2.2 服务端运行的Service</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">extends</span> <span class="title class_">Service</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> IBinder <span class="title function_">onBind</span><span class="params">(Intent intent)</span> &#123;</span><br><span class="line">        <span class="comment">//返回服务端的IBinder句柄</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyBinder</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>注册服务，让服务端Service运行在<code>:remote</code>进程，来实现跨进程</p>
-<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;.binder.no_aidl.MyService&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:process</span>=<span class="string">&quot;:remote&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
-
-<p>运行在服务端的Binder对象</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyBinder</span> <span class="keyword">extends</span> <span class="title class_">Binder</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (code == <span class="number">1</span>) &#123;<span class="comment">//如果是约定好的行为码1</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是服务端 MyBinder , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line">            <span class="comment">//1. 从data读取客户端参数</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端收到：&quot;</span> + data.readString());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;777&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端返回：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 从reply向客户端写返回值</span></span><br><span class="line">            reply.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 处理完成</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>输出日志</p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/b648c0439d854405b3189bc6d5079c9ftplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="" title="img">
-
-<p>Binder机制使用了<strong>Parcel来序列化数据</strong>，客户端在主线程调用了<strong>transact来请求</strong>（Parcel data传参），服务端在<strong>Binder线程</strong>调用<strong>onTransact来响应</strong>（Parcel reply回传结果）。</p>
-<h2 id="三、Binder源码流程"><a href="#三、Binder源码流程" class="headerlink" title="三、Binder源码流程"></a>三、Binder源码流程</h2><h3 id="3-1、Binder的调用流程图"><a href="#3-1、Binder的调用流程图" class="headerlink" title="3.1、Binder的调用流程图"></a>3.1、Binder的调用流程图</h3><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714ed5c901bcca2tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
-
-<h3 id="3-2、客户端与驱动交互"><a href="#3-2、客户端与驱动交互" class="headerlink" title="3.2、客户端与驱动交互"></a>3.2、客户端与驱动交互</h3><p>先来看客户端与驱动的交互。因为是跨进程调用（指定了<code>:remote</code>），示例里onServiceConnected回调回来的service对象是个BinderProxy代理实例（不跨进程的话会发生<code>远程转本地</code>，后面讲），我们以service.transact(1, data, reply, 0)这行调用作为入口跟进。</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//BinderProxy.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">    <span class="comment">//调用了native方法</span></span><br><span class="line">    <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这个native方法在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/base/core/jni/android_util_Binder.cpp">android_util_Binder.cpp</a>里注册</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//JNI注册</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> JNINativeMethod gBinderProxyMethods[] = &#123;</span><br><span class="line">    &#123; <span class="string">&quot;transactNative&quot;</span>,</span><br><span class="line">     <span class="string">&quot;(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z&quot;</span>,</span><br><span class="line">     (<span class="type">void</span>*)android_os_BinderProxy_transact&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//native方法具体实现</span></span><br><span class="line"><span class="function"><span class="type">static</span> jboolean <span class="title">android_os_BinderProxy_transact</span><span class="params">(JNIEnv* env, jobject obj,</span></span></span><br><span class="line"><span class="params"><span class="function">        jint code, jobject dataObj, jobject replyObj, jint flags)</span></span>&#123;</span><br><span class="line">    <span class="comment">//转成native层的Parcel</span></span><br><span class="line">    Parcel* data = <span class="built_in">parcelForJavaObject</span>(env, dataObj);</span><br><span class="line">    Parcel* reply = <span class="built_in">parcelForJavaObject</span>(env, replyObj);</span><br><span class="line">    <span class="comment">//拿到native层的句柄BpBinder</span></span><br><span class="line">    IBinder* target = (IBinder*)</span><br><span class="line">        env-&gt;<span class="built_in">GetLongField</span>(obj, gBinderProxyOffsets.mObject);</span><br><span class="line">    <span class="comment">//调用BpBinder的transact</span></span><br><span class="line">    <span class="type">status_t</span> err = target-&gt;<span class="built_in">transact</span>(code, *data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>继续跟<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/BpBinder.cpp">BpBinder.cpp</a></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//BpBinder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BpBinder::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//交给线程单例处理，驱动会根据mHandle值来找到对应的binder句柄</span></span><br><span class="line">    <span class="type">status_t</span> status = IPCThreadState::<span class="built_in">self</span>()-&gt;<span class="built_in">transact</span>(</span><br><span class="line">        mHandle, code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>IPCThreadState是一个<strong>线程单例</strong>，负责与binder驱动进行具体的指令通信，跟进<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/IPCThreadState.cpp">IPCThreadState.cpp</a></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//将数据写入mOut，见1.1</span></span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_TRANSACTION, flags, handle, code, data, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...先忽略one way异步调用的代码，只看有返回值的同步调用</span></span><br><span class="line">    <span class="comment">//跟binder驱动交互，传入reply接收返回数据，见1.2</span></span><br><span class="line">    err = <span class="built_in">waitForResponse</span>(reply);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 将数据写入mOut</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::writeTransactionData</span><span class="params">(...)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    binder_transaction_data tr;</span><br><span class="line">    <span class="comment">//...打包各种数据（data size、buffer、offsets）</span></span><br><span class="line">    tr.sender_euid = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//将BC_TRANSACTION指令写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(cmd);</span><br><span class="line">    <span class="comment">//将打包好的binder_transaction_data写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">write</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 跟binder驱动交互，传入reply接收返回数据</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::waitForResponse</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//这个循环很重要，客户端就是在这里休眠等待服务端返回结果的</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">//跟驱动进行数据交互，往驱动写mOut，从驱动读mIn，见1.3</span></span><br><span class="line">        <span class="built_in">talkWithDriver</span>();</span><br><span class="line">        <span class="comment">//读取驱动回复的指令</span></span><br><span class="line">        cmd = (<span class="type">uint32_t</span>)mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">        <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">            <span class="keyword">case</span> BR_TRANSACTION_COMPLETE:</span><br><span class="line">                <span class="comment">//表示驱动已经收到客户端的transact请求</span></span><br><span class="line">                <span class="comment">//如果是one way异步调用，到这就可以结束了</span></span><br><span class="line">                <span class="keyword">if</span> (!reply &amp;&amp; !acquireResult) <span class="keyword">goto</span> finish;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> BR_REPLY:</span><br><span class="line">                <span class="comment">//表示客户端收到服务端的返回结果</span></span><br><span class="line">                binder_transaction_data tr;</span><br><span class="line">                <span class="comment">//把服务端的数据读出来，打包进tr</span></span><br><span class="line">                err = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">                <span class="comment">//再把tr的数据透传进reply</span></span><br><span class="line">                reply-&gt;<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line">                <span class="comment">//结束</span></span><br><span class="line">                <span class="keyword">goto</span> finish;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 跟驱动进行数据交互，往驱动写mOut，从驱动读mIn</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::talkWithDriver</span><span class="params">(<span class="type">bool</span> doReceive)</span></span>&#123;</span><br><span class="line">    binder_write_read bwr;</span><br><span class="line">    <span class="comment">//指定写数据大小和写缓冲区</span></span><br><span class="line">    bwr.write_size = outAvail;</span><br><span class="line">    bwr.write_buffer = (<span class="type">uintptr_t</span>)mOut.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//指定读数据大小和读缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (doReceive &amp;&amp; needRead) &#123;</span><br><span class="line">        bwr.read_size = mIn.<span class="built_in">dataCapacity</span>();</span><br><span class="line">        bwr.read_buffer = (<span class="type">uintptr_t</span>)mIn.<span class="built_in">data</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bwr.read_size = <span class="number">0</span>;</span><br><span class="line">        bwr.read_buffer = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ioctl的调用进入了binder驱动层的binder_ioctl</span></span><br><span class="line">    <span class="built_in">ioctl</span>(mProcess-&gt;mDriverFD, BINDER_WRITE_READ, &amp;bwr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.write_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//数据已经写入驱动，从mOut移除</span></span><br><span class="line">        <span class="keyword">if</span> (bwr.write_consumed &lt; mOut.<span class="built_in">dataSize</span>())</span><br><span class="line">            mOut.<span class="built_in">remove</span>(<span class="number">0</span>, bwr.write_consumed);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            mOut.<span class="built_in">setDataSize</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (bwr.read_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//从驱动读出数据存入mIn</span></span><br><span class="line">        mIn.<span class="built_in">setDataSize</span>(bwr.read_consumed);</span><br><span class="line">        mIn.<span class="built_in">setDataPosition</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>ioctl的调用进入了<strong>binder驱动层的binder_ioctl</strong></p>
-<h3 id="3-3、服务端与驱动交互"><a href="#3-3、服务端与驱动交互" class="headerlink" title="3.3、服务端与驱动交互"></a>3.3、服务端与驱动交互</h3><p>服务端创建了一个线程注册进binder驱动，即binder线程，在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/ProcessState.cpp">ProcessState.cpp</a></p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">IPCThreadState::joinThreadPool</span><span class="params">(<span class="type">bool</span> isMain)</span></span>&#123;</span><br><span class="line">    <span class="comment">//向binder驱动写数据，表示当前线程需要注册进binder驱动</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(isMain ? BC_ENTER_LOOPER : BC_REGISTER_LOOPER);</span><br><span class="line">    <span class="type">status_t</span> result;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">//进入死循环，等待指令的到来，见1.1</span></span><br><span class="line">        result = <span class="built_in">getAndExecuteCommand</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (result != -ECONNREFUSED &amp;&amp; result != -EBADF);</span><br><span class="line">    <span class="comment">//向binder驱动写数据（退出循环，线程结束）</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(BC_EXIT_LOOPER);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 等待指令的到来</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::getAndExecuteCommand</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//跟驱动进行数据交互，驱动会把指令写进mIn</span></span><br><span class="line">    <span class="built_in">talkWithDriver</span>();</span><br><span class="line">    <span class="comment">//从mIn读出指令</span></span><br><span class="line">    cmd = mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">    <span class="comment">//执行指令，见1.2</span></span><br><span class="line">    result = <span class="built_in">executeCommand</span>(cmd);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 执行指令</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::executeCommand</span><span class="params">(<span class="type">int32_t</span> cmd)</span></span>&#123;</span><br><span class="line">    <span class="comment">//客户端发请求到驱动，驱动转发到服务端</span></span><br><span class="line">    <span class="keyword">switch</span> ((<span class="type">uint32_t</span>)cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> BR_TRANSACTION:&#123;</span><br><span class="line">            <span class="comment">//服务端收到BR_TRANSACTION指令</span></span><br><span class="line">            binder_transaction_data tr;</span><br><span class="line">            <span class="comment">//读出客户端请求的参数</span></span><br><span class="line">            result = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line"></span><br><span class="line">            <span class="comment">//准备数据，向上传给Java层</span></span><br><span class="line">            Parcel buffer; Parcel reply;</span><br><span class="line">            buffer.<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//cookie保存的是binder实体，对应服务端的native层对象就是BBinder</span></span><br><span class="line">            <span class="built_in">reinterpret_cast</span>&lt;BBinder*&gt;(tr.cookie)-&gt;<span class="built_in">transact</span>(tr.code, buffer,</span><br><span class="line">                                                            &amp;reply, tr.flags);</span><br><span class="line">            <span class="comment">//服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line">            <span class="built_in">sendReply</span>(reply, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::sendReply</span><span class="params">(<span class="type">const</span> Parcel&amp; reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_REPLY, flags, <span class="number">-1</span>, <span class="number">0</span>, reply, &amp;statusBuffer);</span><br><span class="line">    <span class="comment">//服务端返回结果给客户端就行，不用等待客户端，所以传NULL</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">waitForResponse</span>(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后看下BBinder的transact是怎么向上传递到Java层的，在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/Binder.cpp">Binder.cpp</a>中</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BBinder::transact</span><span class="params">(<span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data, </span></span></span><br><span class="line"><span class="params"><span class="function">                           Parcel* reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">            <span class="comment">//ping指令用来判断连通性，即binder句柄是否还活着</span></span><br><span class="line">        <span class="keyword">case</span> PING_TRANSACTION:</span><br><span class="line">            reply-&gt;<span class="built_in">writeInt32</span>(<span class="built_in">pingBinder</span>());</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">//看这，通过JNI调用到Java层的execTransact，见1.1</span></span><br><span class="line">            err = <span class="built_in">onTransact</span>(code, data, reply, flags);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 通过JNI调用到Java层的execTransact</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="type">status_t</span> <span class="title">onTransact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    JNIEnv* env = <span class="built_in">javavm_to_jnienv</span>(mVM);</span><br><span class="line">    jboolean res = env-&gt;<span class="built_in">CallBooleanMethod</span>(mObject, gBinderOffsets.mExecTransact, ...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>回到Java层，execTransact如下：</p>
-<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//android.os.Binder.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">execTransact</span><span class="params">(...)</span> &#123;</span><br><span class="line">    res = onTransact(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<p><strong>额外Binder问题</strong></p>
-<p>1、<a href="https://www.jianshu.com/p/ea4fc6aefaa8">[007]一次Binder通信最大可以传输多大的数据？</a></p>
-<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/image-20240927165800594.png" class="" title="image-20240927165800594">
-
-<p>2、<a href="https://blog.csdn.net/maniuT/article/details/132000536">Android跨进程传大图思考及实现——附上原理分析</a></p>
-<p>1.Binder驱动给每个进程<strong>最多分配4M</strong>的buffer空间大小；<br>2.异步事务的空闲缓冲区空间大小<strong>最多为2M</strong>；<br>3.Binder内核内存上限为<strong>1M-8k</strong>;<br>4.异步事务缓冲区空间大小等于<strong>buffer_size&#x2F;2</strong>，具体值取决于<strong>buffer_size</strong>; </p>
-<p>TODO：Binder内核、IPCThreadState相关知识点的整理</p>
-<p><strong>参考资料：</strong></p>
-<p> <a href="https://www.freesion.com/article/69441396225/" title="https://my.oschina.net/wolfcs/blog/209421">Android Binder 线程</a></p>
-<p><a href="https://zhuanlan.zhihu.com/p/35519585">写给 Android 应用工程师的 Binder 原理剖析</a></p>
-<p><a href="https://juejin.cn/post/6890088205916307469">图解 | 不得错过的Binder浅析（一）</a></p>
-<p><a href="https://juejin.cn/post/6844904115777044488#comment">图解Android中的binder机制</a></p>
-<p><a href="https://my.oschina.net/youranhongcha/blog/149578">红茶一杯话 Binder（ServiceManager 篇）</a></p>
-<p><a href="https://blog.csdn.net/luoshengyang/article/details/6618363">Android进程间通信（IPC）机制Binder简要介绍和学习计划（罗升阳）</a></p>
-]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>Android</tag>
-        <tag>framework</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>又又又开户了</title>
-    <url>/2024/10/07/%E5%8F%88%E5%8F%88%E5%8F%88%E5%BC%80%E6%88%B7%E4%BA%86/</url>
-    <content><![CDATA[<h1 id="又又又开户了"><a href="#又又又开户了" class="headerlink" title="又又又开户了"></a>又又又开户了</h1><p>多年前的韭菜，现在又重新开户了，我胡汉三又回来了(^o^)&#x2F;</p>
-]]></content>
-      <categories>
-        <category>生活杂谈</category>
-      </categories>
-      <tags>
-        <tag>股票</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>广播日志分析</title>
-    <url>/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/</url>
-    <content><![CDATA[<h1 id="广播日志分析"><a href="#广播日志分析" class="headerlink" title="广播日志分析"></a>广播日志分析</h1><p>行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent.action.SCREEN_OFF&#x2F;u-1} from uid 1000 pid 965 for 57 receivers</p>
-<p>这里的57 receivers代表是什么东西？</p>
-<p>这是Android操作系统中的一个日志条目，它描述了一个名为<code>BroadcastRecord</code>的对象的状态。下面是对这个日志条目的解释：</p>
-<ul>
-<li><code>Enqueuing</code>: 这个词意味着一个事件被放入了队列中，等待处理。</li>
-<li><code>BroadcastRecord</code>: 这是一个Android中用于广播事件的类。当应用程序发送一个广播，系统会创建一个<code>BroadcastRecord</code>对象来处理这个广播。</li>
-<li><code>&#123;e6067ba android.intent.action.SCREEN_OFF/u-1&#125;</code>: 这部分是<code>BroadcastRecord</code>对象的详细信息。<ul>
-<li><code>e6067ba</code>: 这可能是一个对象的内存地址或者是一个唯一标识符。</li>
-<li><code>android.intent.action.SCREEN_OFF</code>: 这是一个特定的动作，表示屏幕关闭的事件。当用户关闭屏幕时，系统会发送这个广播。</li>
-<li><code>/u-1</code>: 这可能指的是用户ID为-1，通常表示这是一个系统级别的广播。</li>
-</ul>
-</li>
-<li><code>from uid 1000 pid 965</code>: 这表示广播是由用户ID为1000，进程ID为965的应用程序或服务发送的。</li>
-<li><code>for 57 receivers</code>: 这意味着有57个接收器（receivers）注册了对这个特定广播的监听，并将接收这个事件。</li>
-</ul>
-<p>总的来说，这条日志记录了系统在处理一个屏幕关闭事件的广播，该广播是由用户ID为1000，进程ID为965的应用程序或服务发送的，并且有57个接收器将会接收到这个事件。这通常用于调试或监控系统事件。</p>
-<hr>
-<p>Add broadcast &lt;BroadcastRecord{263938f u-1 android.intent.action.SCREEN_OFF}&gt; into [ordered | foreground], pending size 0</p>
-<p>这条日志条目提供了有关Android系统中广播队列状态的信息。下面是对这条日志条目的详细解释：</p>
-<ul>
-<li><p><code>Add broadcast</code>: 这表明一个广播事件被添加到了系统中的广播队列。</p>
-</li>
-<li><p><code>&lt;BroadcastRecord&#123;263938f u-1 android.intent.action.SCREEN_OFF&#125;&gt;</code>: 这是被添加到队列中的广播记录对象的具体信息。</p>
-<ul>
-<li><code>263938f</code>: 这可能是广播记录对象的内存地址或唯一标识符。</li>
-<li><code>u-1</code>: 这通常表示广播是发送给所有用户的，<code>u-1</code>代表用户ID为-1，通常用于系统级别的广播。</li>
-<li><code>android.intent.action.SCREEN_OFF</code>: 这是广播的Action，表明这是一个屏幕关闭的广播，即当设备屏幕关闭时触发。</li>
-</ul>
-</li>
-<li><p><code>into [ordered | foreground]</code>: 这部分说明了广播被添加到队列的方式。</p>
-<ul>
-<li><code>ordered</code>: 表示广播是有序的，即它们将按照接收器注册的顺序被处理。<ul>
-<li><code>foreground</code>: 表示广播是前台广播，这意味着它将在前台进程中被处理，通常具有更高的优先级。</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><p><code>pending size 0</code>: 这表示当前没有待处理的广播。<code>pending</code>指的是等待被处理的广播数量，<code>size 0</code>意味着队列中没有其他广播等待处理，当前添加的广播将是下一个被处理的。</p>
-</li>
-</ul>
-<p>综上所述，这条日志条目表明一个屏幕关闭的广播事件被添加到了一个有序且前台的广播队列中，并且当前没有其他广播在队列中等待处理。这通常用于调试或监控广播事件的处理情况。</p>
-]]></content>
-      <categories>
-        <category>Android</category>
-      </categories>
-      <tags>
-        <tag>Android</tag>
-        <tag>技术点</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>std::lock_guard 用法</title>
-    <url>/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/</url>
-    <content><![CDATA[<p><code>std::lock_guard</code>是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。<code>std::lock_guard</code>在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。</p>
-<p>以下是<code>std::lock_guard</code>的基本用法：</p>
-<h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><p>在使用<code>std::lock_guard</code>之前，需要包含互斥锁的头文件：</p>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br></pre></td></tr></table></figure>
-
-<h3 id="使用std-lock-guard"><a href="#使用std-lock-guard" class="headerlink" title="使用std::lock_guard"></a>使用<code>std::lock_guard</code></h3><ol>
-<li><strong>创建互斥锁</strong>：<br>首先，你需要有一个<code>std::mutex</code>实例。</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">std::mutex mtx;  </span><br></pre></td></tr></table></figure>
-
-<ol start="2">
-<li><strong>创建<code>std::lock_guard</code>实例</strong>：<br>当你需要对共享资源进行访问时，创建一个<code>std::lock_guard</code>对象，并将互斥锁的引用传递给它。</li>
-</ol>
-<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">&#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line"><span class="comment">// 在这个作用域内，mtx 被锁定  </span></span><br><span class="line"><span class="comment">// 访问共享资源  </span></span><br><span class="line">&#125; <span class="comment">// 作用域结束时，lock_guard 对象被销毁，mtx 被解锁  </span></span><br></pre></td></tr></table></figure>
-
-<ol start="3">
-<li><p><strong>访问共享资源</strong>：<br>在<code>std::lock_guard</code>对象的作用域内，互斥锁被保持锁定状态，你可以安全地访问共享资源。</p>
-</li>
-<li><p><strong>自动解锁</strong>：<br>当离开<code>std::lock_guard</code>对象的作用域时（例如，当作用域的代码块结束时），<code>std::lock_guard</code>对象会被销毁，互斥锁会自动释放。</p>
-</li>
-</ol>
-<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::mutex mtx;  </span><br><span class="line"><span class="type">int</span> shared_data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; ++i) &#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line">++shared_data;  </span><br><span class="line"><span class="comment">// 这里可以安全地修改 shared_data，因为 mtx 已被锁定  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="function">std::thread <span class="title">t1</span><span class="params">(increment)</span></span>;  </span><br><span class="line"><span class="function">std::thread <span class="title">t2</span><span class="params">(increment)</span></span>;</span><br><span class="line"></span><br><span class="line">t<span class="number">1.</span><span class="built_in">join</span>();  </span><br><span class="line">t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; <span class="string">&quot;Final value of shared_data: &quot;</span> &lt;&lt; shared_data &lt;&lt; std::endl;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
-
-<p>在这个示例中，我们有两个线程<code>t1</code>和<code>t2</code>，它们都调用<code>increment</code>函数来递增共享数据<code>shared_data</code>。通过使用<code>std::lock_guard</code>，我们确保每次只有一个线程可以修改<code>shared_data</code>，从而避免了竞态条件。</p>
-<p><code>std::lock_guard</code>是线程安全的，并且它提供了一种异常安全的方式来管理锁，因为它保证在发生异常时锁也会被释放。这使得它成为保护共享资源访问的一个很好的选择。</p>
-]]></content>
-      <categories>
-        <category>C/C++</category>
-      </categories>
-      <tags>
-        <tag>C/C++基础</tag>
       </tags>
   </entry>
   <entry>
@@ -619,6 +256,378 @@
       <tags>
         <tag>Android</tag>
         <tag>framework</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Binder原理浅析</title>
+    <url>/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/</url>
+    <content><![CDATA[<h1 id="Binder原理浅析"><a href="#Binder原理浅析" class="headerlink" title="Binder原理浅析"></a>Binder原理浅析</h1><h2 id="一、Binder优势"><a href="#一、Binder优势" class="headerlink" title="一、Binder优势"></a>一、Binder优势</h2><table>
+<thead>
+<tr>
+<th><strong>优势</strong></th>
+<th><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>性能</td>
+<td>一次数据拷贝，mmap内存映射</td>
+</tr>
+<tr>
+<td>稳定性</td>
+<td>基于 C&#x2F;S 架构，架构清晰、职责明确</td>
+</tr>
+<tr>
+<td>安全性</td>
+<td>为每个APP分配UID，鉴别进程身份的重要标志，阻止恶意程序通过猜测接收方地址获得连接</td>
+</tr>
+</tbody></table>
+<h2 id="二、Binder概要设计"><a href="#二、Binder概要设计" class="headerlink" title="二、Binder概要设计"></a>二、Binder概要设计</h2><h3 id="2-1、进程隔离"><a href="#2-1、进程隔离" class="headerlink" title="2.1、进程隔离"></a>2.1、进程隔离</h3><ul>
+<li>操作系统中，进程与进程间内存是不共享的。<strong>两个进程就像两个平行的世界，A 进程没法直接访问 B 进程的数据</strong>，这就是进程隔离的通俗解释。A 进程和 B 进程之间要进行数据交互就得采用特殊的通信机制：进程间通信（IPC）。</li>
+</ul>
+<style>.rvuggrqezcab{zoom:50%;}</style><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/e7bd0de241c94a04a92bb46e0529b414tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="rvuggrqezcab" alt="img">
+
+<ul>
+<li>操作系统从逻辑上将虚拟空间划分为用户空间（User Space）和内核空间（Kernel Space）。内核空间（Kernel）是系统内核运行的空间，用户空间（User Space）是用户程序运行的空间。为了保证安全性，它们之间是隔离的，用户空间需要经过<strong>系统调用</strong>才能访问到内核空间。</li>
+</ul>
+<h3 id="2-2、Binder通信模型"><a href="#2-2、Binder通信模型" class="headerlink" title="2.2、Binder通信模型"></a>2.2、Binder通信模型</h3><p>Binder由四个组件<strong>Client</strong>、<strong>Server</strong>、<strong>Service Manager</strong>和<strong>Binder驱动程序</strong>组成</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-729b3444cd784d882215a24067893d0e_720w.webp" class="" title="img">
+
+<ol>
+<li>Client、Server和Service Manager实现在用户空间中，Binder驱动程序实现在内核空间中</li>
+<li>Binder驱动程序和Service Manager在Android平台中已经实现，开发者只需要在用户空间实现自己的Client和Server</li>
+<li>Binder驱动程序提供设备文件&#x2F;dev&#x2F;binder与用户空间交互，Client、Server和Service Manager通过open和ioctl文件操作函数与Binder驱动程序进行通信</li>
+<li>Client和Server之间的进程间通信通过Binder驱动程序间接实现</li>
+<li>Service Manager是一个守护进程，用来管理Server，并向Client提供查询Server接口的能力</li>
+</ol>
+<h3 id="2-3、Binder通信过程"><a href="#2-3、Binder通信过程" class="headerlink" title="2.3、Binder通信过程"></a>2.3、Binder通信过程</h3><ol>
+<li>首先，一个进程使用 BINDER_SET_CONTEXT_MGR 命令通过 Binder 驱动将自己注册成为 ServiceManager；</li>
+<li>Server 通过驱动向 ServiceManager 中注册 Binder（Server 中的 Binder 实体），表明可以对外提供服务。驱动为这个 Binder 创建位于内核中的实体节点以及 ServiceManager 对实体的引用，将名字以及新建的引用打包传给 ServiceManager，ServiceManger 将其填入查找表。</li>
+<li>Client 通过名字，在 Binder 驱动的帮助下从 ServiceManager 中获取到对 Binder 实体的引用，通过这个引用就能实现和 Server 进程的通信。</li>
+</ol>
+<p>我们看到整个通信过程都需要 Binder 驱动的接入。下图能更加直观的展现整个通信过程(为了进一步抽象通信过程以及呈现上的方便，下图我们忽略了 Binder 实体及其引用的概念)：</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/v2-67854cdf14d07a6a4acf9d675354e1ff_720w.webp" class="" title="img">
+
+<h3 id="2-4、Binder实现过程"><a href="#2-4、Binder实现过程" class="headerlink" title="2.4、Binder实现过程"></a>2.4、Binder实现过程</h3><h4 id="2-4-1、-实现图解"><a href="#2-4-1、-实现图解" class="headerlink" title="2.4.1、 实现图解"></a>2.4.1、 实现图解</h4><p>client请求service服务，比如说Activity请求Activity ManagerService服务，由于Activity和ActivityManagerService是在两个不同的进程中的，那么下图是一个很直观的请求过程。</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6f1fc5a80tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<p><strong>但是注意</strong>，一个进程是不能直接直接操作另一个进程的，比如说读取另一个进程的数据，或者往另一个进程的内存空间写数据，进程之间的通信要通过内核进程才可以，因此这里就要使用到进程通信工具Binder了如下图：</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e9373ce5tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<p><strong>但是</strong>上面还有个问题就是client和service要直接和binder driver打交道，但是实际上client和service并不想知道binder相关协议，所以进一步client通过添加proxy代理，service通过添加stub来进一步处理与binder的交互。</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed6e959b77etplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<p>这样的好处是client和service都可以不用直接去和binder打交道。上面的图好像已经很完善了，但是Android系统更进一步封装，不让client知道Binder的存在，Android系统提供了Manager来管理client。如下图：</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed729e2b6e4tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<p>这样client只需要交给manager来管理就好了，根本就不用关心进程通信相关的事，关于manager其实是很熟悉的，比如说activity的就是由ActivityManager来控制的，ActivityManager是通过Binder获取ActivityManagerService来控制activity的。这样就不用我们自己来使用Binder来ActivityManagerService通信了。</p>
+<p>更进一步，client是如何具体获取到哪个service的呢？如下图所示：</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714aed72270d98etplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<p>在service和binder之间还有一个contextManager，也就是serviceManager，每一个service要先往serviceManager里面进行注册，注册完成之后由serviceManager统一管理。 在Android studio中可以通过adb指定打印出当前已经注册过serviceManager的service。</p>
+<h4 id="2-4-2、实现示例"><a href="#2-4-2、实现示例" class="headerlink" title="2.4.2、实现示例"></a>2.4.2、实现示例</h4><p>示例调用流程如下：</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/5ecf5179cc274c4c8c1e726013ca04d7tplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="" title="img">
+
+<h5 id="2-4-2-1-客户端Activity"><a href="#2-4-2-1-客户端Activity" class="headerlink" title="2.4.2.1 客户端Activity"></a>2.4.2.1 客户端Activity</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//NoAidlActivity.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">    <span class="type">Intent</span> <span class="variable">intent</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">Intent</span>(<span class="built_in">this</span>, MyService.class);</span><br><span class="line"></span><br><span class="line">    bindService(intent, <span class="keyword">new</span> <span class="title class_">ServiceConnection</span>() &#123;</span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">void</span> <span class="title function_">onServiceConnected</span><span class="params">(ComponentName name, IBinder service)</span> &#123;</span><br><span class="line">            <span class="comment">//1. 从对象池拿到可复用的对象（享元模式）</span></span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">data</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line">            <span class="type">Parcel</span> <span class="variable">reply</span> <span class="operator">=</span> Parcel.obtain();</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;666&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端向服务端发送：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 往data写数据，作为请求参数</span></span><br><span class="line">            data.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 拿到服务端的IBinder句柄，调用transact</span></span><br><span class="line">            <span class="comment">//约定行为码是1；需要服务端的返回值，所以flags传0表示同步调用</span></span><br><span class="line">            service.transact(<span class="number">1</span>, data, reply, <span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是客户端 NoAidlActivity , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line"></span><br><span class="line">            <span class="comment">//4. 从reply读取服务端的返回值</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;客户端接收服务端返回：&quot;</span> + reply.readString());</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;, Context.BIND_AUTO_CREATE);</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>如上代码，主要查看步骤2与步骤3。写入参数’666’至data，service.transact把data作为参数传递。</p>
+<h5 id="2-4-2-2-服务端运行的Service"><a href="#2-4-2-2-服务端运行的Service" class="headerlink" title="2.4.2.2 服务端运行的Service"></a>2.4.2.2 服务端运行的Service</h5><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyService</span> <span class="keyword">extends</span> <span class="title class_">Service</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">public</span> IBinder <span class="title function_">onBind</span><span class="params">(Intent intent)</span> &#123;</span><br><span class="line">        <span class="comment">//返回服务端的IBinder句柄</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">MyBinder</span>();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注册服务，让服务端Service运行在<code>:remote</code>进程，来实现跨进程</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">service</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:name</span>=<span class="string">&quot;.binder.no_aidl.MyService&quot;</span></span></span><br><span class="line"><span class="tag">         <span class="attr">android:process</span>=<span class="string">&quot;:remote&quot;</span> /&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>运行在服务端的Binder对象</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyBinder</span> <span class="keyword">extends</span> <span class="title class_">Binder</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="keyword">protected</span> <span class="type">boolean</span> <span class="title function_">onTransact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (code == <span class="number">1</span>) &#123;<span class="comment">//如果是约定好的行为码1</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;--- 我是服务端 MyBinder , pid = &quot;</span></span><br><span class="line">                  + Process.myPid() + <span class="string">&quot;, thread = &quot;</span></span><br><span class="line">                  + Thread.currentThread().getName());</span><br><span class="line">            <span class="comment">//1. 从data读取客户端参数</span></span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端收到：&quot;</span> + data.readString());</span><br><span class="line"></span><br><span class="line">            <span class="type">String</span> <span class="variable">str</span> <span class="operator">=</span> <span class="string">&quot;777&quot;</span>;</span><br><span class="line">            Log.e(<span class="string">&quot;哈利迪&quot;</span>, <span class="string">&quot;服务端返回：&quot;</span> + str);</span><br><span class="line">            <span class="comment">//2. 从reply向客户端写返回值</span></span><br><span class="line">            reply.writeString(str);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//3. 处理完成</span></span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="built_in">super</span>.onTransact(code, data, reply, flags);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>输出日志</p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/b648c0439d854405b3189bc6d5079c9ftplv-k3u1fbpfcp-zoom-in-crop-mark1512000.webp" class="" title="img">
+
+<p>Binder机制使用了<strong>Parcel来序列化数据</strong>，客户端在主线程调用了<strong>transact来请求</strong>（Parcel data传参），服务端在<strong>Binder线程</strong>调用<strong>onTransact来响应</strong>（Parcel reply回传结果）。</p>
+<h2 id="三、Binder源码流程"><a href="#三、Binder源码流程" class="headerlink" title="三、Binder源码流程"></a>三、Binder源码流程</h2><h3 id="3-1、Binder的调用流程图"><a href="#3-1、Binder的调用流程图" class="headerlink" title="3.1、Binder的调用流程图"></a>3.1、Binder的调用流程图</h3><img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/1714ed5c901bcca2tplv-t2oaga2asx-jj-mark3024000q75.webp" class="" title="在这里插入图片描述">
+
+<h3 id="3-2、客户端与驱动交互"><a href="#3-2、客户端与驱动交互" class="headerlink" title="3.2、客户端与驱动交互"></a>3.2、客户端与驱动交互</h3><p>先来看客户端与驱动的交互。因为是跨进程调用（指定了<code>:remote</code>），示例里onServiceConnected回调回来的service对象是个BinderProxy代理实例（不跨进程的话会发生<code>远程转本地</code>，后面讲），我们以service.transact(1, data, reply, 0)这行调用作为入口跟进。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//BinderProxy.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">transact</span><span class="params">(<span class="type">int</span> code, Parcel data, Parcel reply, <span class="type">int</span> flags)</span>&#123;</span><br><span class="line">    <span class="comment">//调用了native方法</span></span><br><span class="line">    <span class="keyword">return</span> transactNative(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这个native方法在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/base/core/jni/android_util_Binder.cpp">android_util_Binder.cpp</a>里注册</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//JNI注册</span></span><br><span class="line"><span class="type">static</span> <span class="type">const</span> JNINativeMethod gBinderProxyMethods[] = &#123;</span><br><span class="line">    &#123; <span class="string">&quot;transactNative&quot;</span>,</span><br><span class="line">     <span class="string">&quot;(ILandroid/os/Parcel;Landroid/os/Parcel;I)Z&quot;</span>,</span><br><span class="line">     (<span class="type">void</span>*)android_os_BinderProxy_transact&#125;,</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">//native方法具体实现</span></span><br><span class="line"><span class="function"><span class="type">static</span> jboolean <span class="title">android_os_BinderProxy_transact</span><span class="params">(JNIEnv* env, jobject obj,</span></span></span><br><span class="line"><span class="params"><span class="function">        jint code, jobject dataObj, jobject replyObj, jint flags)</span></span>&#123;</span><br><span class="line">    <span class="comment">//转成native层的Parcel</span></span><br><span class="line">    Parcel* data = <span class="built_in">parcelForJavaObject</span>(env, dataObj);</span><br><span class="line">    Parcel* reply = <span class="built_in">parcelForJavaObject</span>(env, replyObj);</span><br><span class="line">    <span class="comment">//拿到native层的句柄BpBinder</span></span><br><span class="line">    IBinder* target = (IBinder*)</span><br><span class="line">        env-&gt;<span class="built_in">GetLongField</span>(obj, gBinderProxyOffsets.mObject);</span><br><span class="line">    <span class="comment">//调用BpBinder的transact</span></span><br><span class="line">    <span class="type">status_t</span> err = target-&gt;<span class="built_in">transact</span>(code, *data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>继续跟<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/BpBinder.cpp">BpBinder.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//BpBinder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BpBinder::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//交给线程单例处理，驱动会根据mHandle值来找到对应的binder句柄</span></span><br><span class="line">    <span class="type">status_t</span> status = IPCThreadState::<span class="built_in">self</span>()-&gt;<span class="built_in">transact</span>(</span><br><span class="line">        mHandle, code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>IPCThreadState是一个<strong>线程单例</strong>，负责与binder驱动进行具体的指令通信，跟进<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/IPCThreadState.cpp">IPCThreadState.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::transact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//将数据写入mOut，见1.1</span></span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_TRANSACTION, flags, handle, code, data, <span class="literal">NULL</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//...先忽略one way异步调用的代码，只看有返回值的同步调用</span></span><br><span class="line">    <span class="comment">//跟binder驱动交互，传入reply接收返回数据，见1.2</span></span><br><span class="line">    err = <span class="built_in">waitForResponse</span>(reply);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 将数据写入mOut</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::writeTransactionData</span><span class="params">(...)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    binder_transaction_data tr;</span><br><span class="line">    <span class="comment">//...打包各种数据（data size、buffer、offsets）</span></span><br><span class="line">    tr.sender_euid = <span class="number">0</span>;</span><br><span class="line">    <span class="comment">//将BC_TRANSACTION指令写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(cmd);</span><br><span class="line">    <span class="comment">//将打包好的binder_transaction_data写入mOut</span></span><br><span class="line">    mOut.<span class="built_in">write</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 跟binder驱动交互，传入reply接收返回数据</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::waitForResponse</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    <span class="comment">//这个循环很重要，客户端就是在这里休眠等待服务端返回结果的</span></span><br><span class="line">    <span class="keyword">while</span> (<span class="number">1</span>) &#123;</span><br><span class="line">        <span class="comment">//跟驱动进行数据交互，往驱动写mOut，从驱动读mIn，见1.3</span></span><br><span class="line">        <span class="built_in">talkWithDriver</span>();</span><br><span class="line">        <span class="comment">//读取驱动回复的指令</span></span><br><span class="line">        cmd = (<span class="type">uint32_t</span>)mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">        <span class="keyword">switch</span> (cmd) &#123;</span><br><span class="line">            <span class="keyword">case</span> BR_TRANSACTION_COMPLETE:</span><br><span class="line">                <span class="comment">//表示驱动已经收到客户端的transact请求</span></span><br><span class="line">                <span class="comment">//如果是one way异步调用，到这就可以结束了</span></span><br><span class="line">                <span class="keyword">if</span> (!reply &amp;&amp; !acquireResult) <span class="keyword">goto</span> finish;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> BR_REPLY:</span><br><span class="line">                <span class="comment">//表示客户端收到服务端的返回结果</span></span><br><span class="line">                binder_transaction_data tr;</span><br><span class="line">                <span class="comment">//把服务端的数据读出来，打包进tr</span></span><br><span class="line">                err = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line">                <span class="comment">//再把tr的数据透传进reply</span></span><br><span class="line">                reply-&gt;<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line">                <span class="comment">//结束</span></span><br><span class="line">                <span class="keyword">goto</span> finish;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 跟驱动进行数据交互，往驱动写mOut，从驱动读mIn</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::talkWithDriver</span><span class="params">(<span class="type">bool</span> doReceive)</span></span>&#123;</span><br><span class="line">    binder_write_read bwr;</span><br><span class="line">    <span class="comment">//指定写数据大小和写缓冲区</span></span><br><span class="line">    bwr.write_size = outAvail;</span><br><span class="line">    bwr.write_buffer = (<span class="type">uintptr_t</span>)mOut.<span class="built_in">data</span>();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//指定读数据大小和读缓冲区</span></span><br><span class="line">    <span class="keyword">if</span> (doReceive &amp;&amp; needRead) &#123;</span><br><span class="line">        bwr.read_size = mIn.<span class="built_in">dataCapacity</span>();</span><br><span class="line">        bwr.read_buffer = (<span class="type">uintptr_t</span>)mIn.<span class="built_in">data</span>();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        bwr.read_size = <span class="number">0</span>;</span><br><span class="line">        bwr.read_buffer = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//ioctl的调用进入了binder驱动层的binder_ioctl</span></span><br><span class="line">    <span class="built_in">ioctl</span>(mProcess-&gt;mDriverFD, BINDER_WRITE_READ, &amp;bwr);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (bwr.write_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//数据已经写入驱动，从mOut移除</span></span><br><span class="line">        <span class="keyword">if</span> (bwr.write_consumed &lt; mOut.<span class="built_in">dataSize</span>())</span><br><span class="line">            mOut.<span class="built_in">remove</span>(<span class="number">0</span>, bwr.write_consumed);</span><br><span class="line">        <span class="keyword">else</span></span><br><span class="line">            mOut.<span class="built_in">setDataSize</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (bwr.read_consumed &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        <span class="comment">//从驱动读出数据存入mIn</span></span><br><span class="line">        mIn.<span class="built_in">setDataSize</span>(bwr.read_consumed);</span><br><span class="line">        mIn.<span class="built_in">setDataPosition</span>(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>ioctl的调用进入了<strong>binder驱动层的binder_ioctl</strong></p>
+<h3 id="3-3、服务端与驱动交互"><a href="#3-3、服务端与驱动交互" class="headerlink" title="3.3、服务端与驱动交互"></a>3.3、服务端与驱动交互</h3><p>服务端创建了一个线程注册进binder驱动，即binder线程，在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/ProcessState.cpp">ProcessState.cpp</a></p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//IPCThreadState.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">IPCThreadState::joinThreadPool</span><span class="params">(<span class="type">bool</span> isMain)</span></span>&#123;</span><br><span class="line">    <span class="comment">//向binder驱动写数据，表示当前线程需要注册进binder驱动</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(isMain ? BC_ENTER_LOOPER : BC_REGISTER_LOOPER);</span><br><span class="line">    <span class="type">status_t</span> result;</span><br><span class="line">    <span class="keyword">do</span> &#123;</span><br><span class="line">        <span class="comment">//进入死循环，等待指令的到来，见1.1</span></span><br><span class="line">        result = <span class="built_in">getAndExecuteCommand</span>();</span><br><span class="line">    &#125; <span class="keyword">while</span> (result != -ECONNREFUSED &amp;&amp; result != -EBADF);</span><br><span class="line">    <span class="comment">//向binder驱动写数据（退出循环，线程结束）</span></span><br><span class="line">    mOut.<span class="built_in">writeInt32</span>(BC_EXIT_LOOPER);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 等待指令的到来</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::getAndExecuteCommand</span><span class="params">()</span></span>&#123;</span><br><span class="line">    <span class="comment">//跟驱动进行数据交互，驱动会把指令写进mIn</span></span><br><span class="line">    <span class="built_in">talkWithDriver</span>();</span><br><span class="line">    <span class="comment">//从mIn读出指令</span></span><br><span class="line">    cmd = mIn.<span class="built_in">readInt32</span>();</span><br><span class="line">    <span class="comment">//执行指令，见1.2</span></span><br><span class="line">    result = <span class="built_in">executeCommand</span>(cmd);</span><br><span class="line">    <span class="keyword">return</span> result;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.2 执行指令</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::executeCommand</span><span class="params">(<span class="type">int32_t</span> cmd)</span></span>&#123;</span><br><span class="line">    <span class="comment">//客户端发请求到驱动，驱动转发到服务端</span></span><br><span class="line">    <span class="keyword">switch</span> ((<span class="type">uint32_t</span>)cmd) &#123;</span><br><span class="line">        <span class="keyword">case</span> BR_TRANSACTION:&#123;</span><br><span class="line">            <span class="comment">//服务端收到BR_TRANSACTION指令</span></span><br><span class="line">            binder_transaction_data tr;</span><br><span class="line">            <span class="comment">//读出客户端请求的参数</span></span><br><span class="line">            result = mIn.<span class="built_in">read</span>(&amp;tr, <span class="built_in">sizeof</span>(tr));</span><br><span class="line"></span><br><span class="line">            <span class="comment">//准备数据，向上传给Java层</span></span><br><span class="line">            Parcel buffer; Parcel reply;</span><br><span class="line">            buffer.<span class="built_in">ipcSetDataReference</span>(...);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//cookie保存的是binder实体，对应服务端的native层对象就是BBinder</span></span><br><span class="line">            <span class="built_in">reinterpret_cast</span>&lt;BBinder*&gt;(tr.cookie)-&gt;<span class="built_in">transact</span>(tr.code, buffer,</span><br><span class="line">                                                            &amp;reply, tr.flags);</span><br><span class="line">            <span class="comment">//服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line">            <span class="built_in">sendReply</span>(reply, <span class="number">0</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//1.3 服务端向驱动写返回值，让驱动转发给客户端</span></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">IPCThreadState::sendReply</span><span class="params">(<span class="type">const</span> Parcel&amp; reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    err = <span class="built_in">writeTransactionData</span>(BC_REPLY, flags, <span class="number">-1</span>, <span class="number">0</span>, reply, &amp;statusBuffer);</span><br><span class="line">    <span class="comment">//服务端返回结果给客户端就行，不用等待客户端，所以传NULL</span></span><br><span class="line">    <span class="keyword">return</span> <span class="built_in">waitForResponse</span>(<span class="literal">NULL</span>, <span class="literal">NULL</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后看下BBinder的transact是怎么向上传递到Java层的，在<a href="https://www.androidos.net.cn/android/8.0.0_r4/xref/frameworks/native/libs/binder/Binder.cpp">Binder.cpp</a>中</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">//Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">status_t</span> <span class="title">BBinder::transact</span><span class="params">(<span class="type">uint32_t</span> code, <span class="type">const</span> Parcel&amp; data, </span></span></span><br><span class="line"><span class="params"><span class="function">                           Parcel* reply, <span class="type">uint32_t</span> flags)</span></span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (code) &#123;</span><br><span class="line">            <span class="comment">//ping指令用来判断连通性，即binder句柄是否还活着</span></span><br><span class="line">        <span class="keyword">case</span> PING_TRANSACTION:</span><br><span class="line">            reply-&gt;<span class="built_in">writeInt32</span>(<span class="built_in">pingBinder</span>());</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="comment">//看这，通过JNI调用到Java层的execTransact，见1.1</span></span><br><span class="line">            err = <span class="built_in">onTransact</span>(code, data, reply, flags);</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> err;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//android_util_Binder.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//1.1 通过JNI调用到Java层的execTransact</span></span><br><span class="line"><span class="function"><span class="keyword">virtual</span> <span class="type">status_t</span> <span class="title">onTransact</span><span class="params">(...)</span></span>&#123;</span><br><span class="line">    JNIEnv* env = <span class="built_in">javavm_to_jnienv</span>(mVM);</span><br><span class="line">    jboolean res = env-&gt;<span class="built_in">CallBooleanMethod</span>(mObject, gBinderOffsets.mExecTransact, ...);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>回到Java层，execTransact如下：</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">//android.os.Binder.java</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">execTransact</span><span class="params">(...)</span> &#123;</span><br><span class="line">    res = onTransact(code, data, reply, flags);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<p><strong>额外Binder问题</strong></p>
+<p>1、<a href="https://www.jianshu.com/p/ea4fc6aefaa8">[007]一次Binder通信最大可以传输多大的数据？</a></p>
+<img src="/2024/09/27/Binder%E5%8E%9F%E7%90%86%E6%B5%85%E6%9E%90/image-20240927165800594.png" class="" title="image-20240927165800594">
+
+<p>2、<a href="https://blog.csdn.net/maniuT/article/details/132000536">Android跨进程传大图思考及实现——附上原理分析</a></p>
+<p>1.Binder驱动给每个进程<strong>最多分配4M</strong>的buffer空间大小；<br>2.异步事务的空闲缓冲区空间大小<strong>最多为2M</strong>；<br>3.Binder内核内存上限为<strong>1M-8k</strong>;<br>4.异步事务缓冲区空间大小等于<strong>buffer_size&#x2F;2</strong>，具体值取决于<strong>buffer_size</strong>; </p>
+<p>TODO：Binder内核、IPCThreadState相关知识点的整理</p>
+<p><strong>参考资料：</strong></p>
+<p> <a href="https://www.freesion.com/article/69441396225/" title="https://my.oschina.net/wolfcs/blog/209421">Android Binder 线程</a></p>
+<p><a href="https://zhuanlan.zhihu.com/p/35519585">写给 Android 应用工程师的 Binder 原理剖析</a></p>
+<p><a href="https://juejin.cn/post/6890088205916307469">图解 | 不得错过的Binder浅析（一）</a></p>
+<p><a href="https://juejin.cn/post/6844904115777044488#comment">图解Android中的binder机制</a></p>
+<p><a href="https://my.oschina.net/youranhongcha/blog/149578">红茶一杯话 Binder（ServiceManager 篇）</a></p>
+<p><a href="https://blog.csdn.net/luoshengyang/article/details/6618363">Android进程间通信（IPC）机制Binder简要介绍和学习计划（罗升阳）</a></p>
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>framework</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>C++双冒号::的作用</title>
+    <url>/2024/09/27/C%E5%8F%8C%E5%86%92%E5%8F%B7%E7%9A%84%E4%BD%9C%E7%94%A8/</url>
+    <content><![CDATA[<h3 id="全局命名空间"><a href="#全局命名空间" class="headerlink" title="全局命名空间"></a>全局命名空间</h3><p>全局命名空间是一个包含所有全局变量、函数和类型的<span style="color: #ff0000;">隐式命名空间</span>。如果想要在一个局部作用域内访问全局作用域的实体，可以使用双冒号<code>::</code>。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="type">int</span> var = <span class="number">10</span>; <span class="comment">// global variable</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="type">int</span> var = <span class="number">20</span>; <span class="comment">// local variable</span></span><br><span class="line"></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Global var: &quot;</span> &lt;&lt; ::var &lt;&lt; std::endl; <span class="comment">// 全局参数var</span></span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Local var: &quot;</span> &lt;&lt; var &lt;&lt; std::endl; <span class="comment">// 局部参数var </span></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="type">char</span> zhou; <span class="comment">//全局变量 </span></span><br><span class="line"><span class="type">void</span> sleep（） </span><br><span class="line">｛ </span><br><span class="line"><span class="type">char</span> zhou; <span class="comment">//局部变量 </span></span><br><span class="line"><span class="built_in">char</span>(局部变量) = <span class="built_in">char</span>(局部变量) *<span class="built_in">char</span>(局部变量) ; </span><br><span class="line">::<span class="built_in">char</span>(全局变量) =::<span class="built_in">char</span>(全局变量) *<span class="built_in">char</span>(局部变量); </span><br><span class="line">｝ </span><br></pre></td></tr></table></figure>
+
+<p><span style="color: #4d4d4d;">上述代码中，全局变量和局部变量同名。通过</span><code>::</code><span style="color: #4d4d4d;">运算符，我们可以明确地引用全局变量。</span></p>
+<p>&nbsp;</p>
+<h3 id="类成员访问"><a href="#类成员访问" class="headerlink" title="类成员访问"></a>类成员访问</h3><p>在C++中，双冒号<code>::</code>也用于访问类的<span style="color: #ff0000;">静态成员</span>。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">static</span> <span class="type">int</span> static_var;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">static</span> <span class="type">void</span> <span class="title">static_function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Static function&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> MyClass::static_var = <span class="number">10</span>; <span class="comment">// define static member outside the class</span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Static var: &quot;</span> &lt;&lt; MyClass::static_var &lt;&lt; std::endl;</span><br><span class="line">    MyClass::<span class="built_in">static_function</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><span style="color: #4d4d4d;">在上述代码中，</span><code>::</code><span style="color: #4d4d4d;">被用来访问类的静态成员。注意静态成员需要在类外部定义。</span></p>
+<p>&nbsp;</p>
+<h3 id="命名空间访问"><a href="#命名空间访问" class="headerlink" title="命名空间访问"></a>命名空间访问</h3><p>双冒号<code>::</code>还被用于明确指定某个命名空间中的实体。</p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> MyNamespace &#123;</span><br><span class="line">    <span class="type">int</span> var = <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">function</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Function in namespace&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;&lt;span style=<span class="string">&quot;color: #7f7f7f&quot;</span>&gt;指定某个命名空间中的实体&lt;/span&gt;</span><br><span class="line"></span><br><span class="line"><span class="type">int</span> <span class="built_in">main</span>() &#123;</span><br><span class="line">    std::cout &lt;&lt; <span class="string">&quot;Var: &quot;</span> &lt;&lt; MyNamespace::var &lt;&lt; std::endl;</span><br><span class="line">    MyNamespace::<span class="built_in">function</span>();</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><span style="color: #4d4d4d;">在上述代码中，</span><code>::</code><span style="color: #4d4d4d;">被用来访问特定命名空间中的变量和函数。</span></p>
+<p>&nbsp;</p>
+<h3 id="解决名称冲突"><a href="#解决名称冲突" class="headerlink" title="解决名称冲突"></a>解决名称冲突</h3><p>.<span style="color: #4d4d4d;">双冒号</span><code>::</code><span style="color: #4d4d4d;">还可以用于解决名称冲突，例如当使用了相同名称的两个库时。</span></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">namespace</span> Library1 &#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Print from Library1&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">namespace</span> Library2 &#123;</span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Print from Library2&quot;</span> &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Library1::<span class="built_in">print</span>();</span><br><span class="line">    Library2::<span class="built_in">print</span>();</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="类方法定义"><a href="#类方法定义" class="headerlink" title="类方法定义"></a>类方法定义</h3><p><span style="color: #4d4d4d;"><span style="color: #4d4d4d;">前面一般是类名称，后面一般是该类的成员名称，C++为例避免不同的类有名称相同的成员而采用作用域的方式进行区分</span><br><span style="color: #4d4d4d;">如：A,B表示两个类，在A,B中都有成员member。那么</span><br><span style="color: #4d4d4d;">A::member就表示类A中的成员member</span><br><span style="color: #4d4d4d;">B::member就表示类B中的成员member</span></span></p>
+<p><span style="color: #4d4d4d;">比如声明了一个类A，类A里声明了一个成员函数voidf()，但没有在类的声明里给出f的定义，那么在类外定义f时，就要写成voidA::f()，表示这个f()函数是类A的成员函数。例如</span></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">CA</span> &#123;  </span><br><span class="line"><span class="keyword">public</span>:  </span><br><span class="line">  <span class="type">int</span> ca_var;  </span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span></span>;  </span><br><span class="line">  <span class="function"><span class="type">int</span> <span class="title">add</span><span class="params">(<span class="type">int</span> a)</span></span>;  </span><br><span class="line">&#125;; </span><br><span class="line">  </span><br><span class="line"><span class="comment">//那么在实现这个函数时，必须这样书写：  </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">CA::add</span><span class="params">(<span class="type">int</span> a, <span class="type">int</span> b)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">return</span> a + b;  </span><br><span class="line">&#125;  </span><br><span class="line">  </span><br><span class="line"><span class="comment">//另外，双冒号也常常用于在类变量内部作为当前类实例的元素进行表示，比如:  </span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">CA::add</span><span class="params">(<span class="type">int</span> a)</span>  </span></span><br><span class="line"><span class="function"></span>&#123;  </span><br><span class="line">  <span class="keyword">return</span> a + ::ca_var;  </span><br><span class="line">&#125; </span><br><span class="line">  </span><br><span class="line"><span class="comment">//表示当前类实例中的变量ca_var。</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="模板类中的双冒号"><a href="#模板类中的双冒号" class="headerlink" title="模板类中的双冒号"></a>模板类中的双冒号</h3><p><span style="color: #4d4d4d;">在模板类中，双冒号用于访问基础模板类的成员。</span></p>
+<figure class="highlight c++"><table><tr><td class="code"><pre><span class="line"><span class="keyword">template</span>&lt;<span class="keyword">class</span> <span class="title class_">T</span>&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span> &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    T var;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MyClass</span>(T x) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;var = x;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br><span class="line"><span class="keyword">template</span>&lt;&gt;</span><br><span class="line"><span class="keyword">class</span> <span class="title class_">MyClass</span>&lt;<span class="type">int</span>&gt; &#123;</span><br><span class="line"><span class="keyword">public</span>:</span><br><span class="line">    <span class="type">int</span> var;</span><br><span class="line"></span><br><span class="line">    <span class="built_in">MyClass</span>(<span class="type">int</span> x) &#123;</span><br><span class="line">        <span class="keyword">this</span>-&gt;var = x;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="type">void</span> <span class="title">print_base_var</span><span class="params">(MyClass&lt;<span class="type">double</span>&gt;&amp; base_obj)</span> </span>&#123;</span><br><span class="line">        std::cout &lt;&lt; <span class="string">&quot;Base var: &quot;</span> &lt;&lt; base_obj.MyClass&lt;<span class="type">double</span>&gt;::var &lt;&lt; std::endl;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p><span style="color: #4d4d4d;">在上述代码中，特化的模板类</span><code>MyClass&lt;int&gt;</code><span style="color: #4d4d4d;">使用</span><code>::</code><span style="color: #4d4d4d;">来访问基础模板类</span><code>MyClass&lt;double&gt;</code><span style="color: #4d4d4d;">的成员。</span></p>
+<p>&nbsp;</p>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C/C++基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>android日志相关</title>
+    <url>/2024/10/08/android%E6%97%A5%E5%BF%97%E7%9B%B8%E5%85%B3/</url>
+    <content><![CDATA[<h1 id="android日志相关"><a href="#android日志相关" class="headerlink" title="android日志相关"></a>android日志相关</h1><h2 id="一、Log-isLoggable"><a href="#一、Log-isLoggable" class="headerlink" title="一、Log.isLoggable"></a>一、Log.isLoggable</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">protected</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="type">boolean</span> <span class="variable">DEBUG_LOG</span> <span class="operator">=</span> Log.isLoggable(<span class="string">&quot;CallController&quot;</span>, Log.DEBUG);</span><br></pre></td></tr></table></figure>
+
+<p>1、机器重启后失效</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop log.tag.CallController D</span><br><span class="line">#重新启动system_server</span><br><span class="line">adb shell stop</span><br><span class="line">adb shell start</span><br></pre></td></tr></table></figure>
+
+<p>2、机器重启仍生效</p>
+<p>添加persist关键字</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adb shell setprop persist.log.log.tag.CallController D</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="二、ProtoLog"><a href="#二、ProtoLog" class="headerlink" title="二、ProtoLog"></a>二、ProtoLog</h2><figure class="highlight java"><table><tr><td class="code"><pre><span class="line">ProtoLog.v(WM_DEBUG_ORIENTATION, <span class="string">&quot;Disabling listeners&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<p>ProtoLog是为WindowManager设计的，ProtoLog的命令也集成在内。</p>
+<p><code>wm logging与cmd window logging，这两个指令等价。</code></p>
+<p>ProtoLog有两种日志输出的方式：</p>
+<h3 id="1、winscope方式"><a href="#1、winscope方式" class="headerlink" title="1、winscope方式"></a>1、winscope方式</h3><h4 id="1-1、日志获取"><a href="#1-1、日志获取" class="headerlink" title="1.1、日志获取"></a>1.1、日志获取</h4><table>
+<thead>
+<tr>
+<th align="left"><strong>名称&#x2F;命令</strong></th>
+<th align="left"><strong>描述</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">wm logging enable&#x2F;disable [group…]</td>
+<td align="left">按照groups启停ProtoLog，真正启动是start命令，调用start命令之后才输出</td>
+</tr>
+<tr>
+<td align="left">wm logging start</td>
+<td align="left">start proto logging 开始Proto log输出，让你enable的Group生效；输出到Logcat时不需要start</td>
+</tr>
+<tr>
+<td align="left">wm logging stop</td>
+<td align="left">stop proto logging</td>
+</tr>
+</tbody></table>
+<p>例如打开WM_DEBUG_ORIENTATION日志</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">D:\Program Files (x86)\Mobatek\home&gt; adb shell</span><br><span class="line"></span><br><span class="line">AEOP522:/ # wm logging enable WM_DEBUG_ORIENTATION</span><br><span class="line">AEOP522:/ # wm logging start</span><br><span class="line">Start logging to /data/cache/wmtrace/wm_log.winscope.</span><br><span class="line">AEOP522:/ # wm logging stop</span><br><span class="line">Stop logging to /data/cache/wmtrace/wm_log.winscope. Waiting for log to flush.</span><br><span class="line">Log written to /data/cache/wmtrace/wm_log.winscope.</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2、日志分析"><a href="#1-2、日志分析" class="headerlink" title="1.2、日志分析"></a>1.2、日志分析</h4><p>得到winscope文件，adb pull &#x2F;data&#x2F;cache&#x2F;wmtrace&#x2F;wm_log.winscope，有两种方式解析分析</p>
+<ul>
+<li>&#x2F;prebuilts&#x2F;misc&#x2F;common&#x2F;winscope&#x2F;运行用chrome运行winscope.html分析</li>
+<li>利用protologtool分析</li>
+</ul>
+<p><strong>参考链接</strong></p>
+<p><a href="https://blog.csdn.net/realDonaldTrump/article/details/126095631">Android动态日志ProtoLog简介和使用</a></p>
+<p><a href="https://blog.csdn.net/learnframework/article/details/129432374">android车机手机黑屏闪黑终结者-Winscope工具使用介绍</a></p>
+<h3 id="2、Logcat方式"><a href="#2、Logcat方式" class="headerlink" title="2、Logcat方式"></a>2、Logcat方式</h3><table>
+<thead>
+<tr>
+<th><strong>名称&#x2F;命令</strong></th>
+<th><strong>名称&#x2F;命令</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td>wm logging enable-text&#x2F;disable-text [group…]</td>
+<td>启停动态日志，输出到logcat，不需要调用start命令就会开始输出</td>
+</tr>
+</tbody></table>
+<p>例如打开WM_DEBUG_ORIENTATION日志</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell wm logging enable-text WM_DEBUG_ORIENTATION</span><br><span class="line"></span><br><span class="line">adb logcat -b all |grep -i WindowManager</span><br></pre></td></tr></table></figure>
+
+<h3 id="3、WMShell的ProtoLog日志"><a href="#3、WMShell的ProtoLog日志" class="headerlink" title="3、WMShell的ProtoLog日志"></a>3、WMShell的ProtoLog日志</h3><figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="comment">// frameworks/base/libs/WindowManager/Shell/src/com/android/wm/shell/transition/Transitions.java</span></span><br><span class="line">ProtoLog.v(ShellProtoLogGroup.WM_SHELL_TRANSITIONS, <span class="string">&quot;onTransitionReady %s: %s&quot;</span>,</span><br><span class="line">                transitionToken, info);</span><br></pre></td></tr></table></figure>
+
+<p>设置方式：adb shell dumpsys activity service SystemUIService WMShell protolog enable-text WM_SHELL_TRANSITIONS</p>
+<h2 id="三、LogBuffer"><a href="#三、LogBuffer" class="headerlink" title="三、LogBuffer"></a>三、LogBuffer</h2><p>SystemUI有一个LogBuffer类，用于动态输出日志。</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">NotificationInterruptLogger</span> <span class="meta">@Inject</span> constructor(</span><br><span class="line">    <span class="meta">@NotificationInterruptLog</span> val buffer: LogBuffer</span><br><span class="line">) &#123;</span><br><span class="line">    fun <span class="title function_">logHeadsUp</span><span class="params">(entry: NotificationEntry)</span> &#123;</span><br><span class="line">        buffer.log(TAG, DEBUG, &#123;</span><br><span class="line">            str1 = entry.logKey</span><br><span class="line">        &#125;, &#123;</span><br><span class="line">            <span class="string">&quot;Heads up: $str1&quot;</span></span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">private</span> const <span class="type">val</span> <span class="variable">TAG</span> <span class="operator">=</span> <span class="string">&quot;InterruptionStateProvider&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>设置方式</p>
+<figure class="highlight shell"><table><tr><td class="code"><pre><span class="line">adb shell settings put global systemui/tag/InterruptionStateProvider v</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="四、Logcat"><a href="#四、Logcat" class="headerlink" title="四、Logcat"></a>四、Logcat</h2><figure class="highlight shell"><table><tr><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取普通的andorid <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">仅抓取events <span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b events &gt; log.txt</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">抓取所有类型<span class="built_in">log</span></span></span><br><span class="line">adb shell logcat -b all &gt; log.txt</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">根据关键字抓取<span class="built_in">log</span>，-i可以忽略大小，-e可以添加多条关键字，如下：</span></span><br><span class="line">adb shell logcat -b events | grep -ie &quot;关键log1&quot; -ie &quot;关键log2&quot;&gt; log.txt</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="五、ALOGV"><a href="#五、ALOGV" class="headerlink" title="五、ALOGV"></a>五、ALOGV</h2><p>在cpp文件的起始代码加入如下代码段，就可正常开启日志</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">#define LOG_TAG &quot;tag&quot;</span><br><span class="line">#undef NDEBUG</span><br><span class="line">#define LOG_NDEBUG   0</span><br></pre></td></tr></table></figure>
+
+<p>如Layer.cpp，只需要把LOG_NDEBUG的注释去掉即可</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="comment">// sys/frameworks/native/services/surfaceflinger/Layer.cpp</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//#define LOG_NDEBUG 0</span></span><br><span class="line"><span class="meta">#<span class="keyword">undef</span> LOG_TAG</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> LOG_TAG <span class="string">&quot;Layer&quot;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> ATRACE_TAG ATRACE_TAG_GRAPHICS</span></span><br></pre></td></tr></table></figure>
+
+
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>framework</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>std::lock_guard 用法</title>
+    <url>/2024/09/27/lock_guard%20%E7%94%A8%E6%B3%95/</url>
+    <content><![CDATA[<p><code>std::lock_guard</code>是C++11标准库中引入的一个RAII（资源获取即初始化）风格的互斥锁管理工具，用于简化对互斥锁（mutex）的管理。<code>std::lock_guard</code>在构造时自动获取锁，并在析构时释放锁，这确保了即使在发生异常的情况下，锁也能被正确释放。</p>
+<p>以下是<code>std::lock_guard</code>的基本用法：</p>
+<h3 id="包含头文件"><a href="#包含头文件" class="headerlink" title="包含头文件"></a>包含头文件</h3><p>在使用<code>std::lock_guard</code>之前，需要包含互斥锁的头文件：</p>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用std-lock-guard"><a href="#使用std-lock-guard" class="headerlink" title="使用std::lock_guard"></a>使用<code>std::lock_guard</code></h3><ol>
+<li><strong>创建互斥锁</strong>：<br>首先，你需要有一个<code>std::mutex</code>实例。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">std::mutex mtx;  </span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li><strong>创建<code>std::lock_guard</code>实例</strong>：<br>当你需要对共享资源进行访问时，创建一个<code>std::lock_guard</code>对象，并将互斥锁的引用传递给它。</li>
+</ol>
+<figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">&#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line"><span class="comment">// 在这个作用域内，mtx 被锁定  </span></span><br><span class="line"><span class="comment">// 访问共享资源  </span></span><br><span class="line">&#125; <span class="comment">// 作用域结束时，lock_guard 对象被销毁，mtx 被解锁  </span></span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li><p><strong>访问共享资源</strong>：<br>在<code>std::lock_guard</code>对象的作用域内，互斥锁被保持锁定状态，你可以安全地访问共享资源。</p>
+</li>
+<li><p><strong>自动解锁</strong>：<br>当离开<code>std::lock_guard</code>对象的作用域时（例如，当作用域的代码块结束时），<code>std::lock_guard</code>对象会被销毁，互斥锁会自动释放。</p>
+</li>
+</ol>
+<h3 id="示例代码"><a href="#示例代码" class="headerlink" title="示例代码"></a>示例代码</h3><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;mutex&gt;</span>  </span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;thread&gt;</span></span></span><br><span class="line"></span><br><span class="line">std::mutex mtx;  </span><br><span class="line"><span class="type">int</span> shared_data = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">void</span> <span class="title">increment</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span>; i &lt; <span class="number">10000</span>; ++i) &#123;  </span><br><span class="line"><span class="function">std::lock_guard&lt;std::mutex&gt; <span class="title">lk</span><span class="params">(mtx)</span></span>;  </span><br><span class="line">++shared_data;  </span><br><span class="line"><span class="comment">// 这里可以安全地修改 shared_data，因为 mtx 已被锁定  </span></span><br><span class="line">&#125;  </span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;  </span><br><span class="line"><span class="function">std::thread <span class="title">t1</span><span class="params">(increment)</span></span>;  </span><br><span class="line"><span class="function">std::thread <span class="title">t2</span><span class="params">(increment)</span></span>;</span><br><span class="line"></span><br><span class="line">t<span class="number">1.</span><span class="built_in">join</span>();  </span><br><span class="line">t<span class="number">2.</span><span class="built_in">join</span>();</span><br><span class="line"></span><br><span class="line">std::cout &lt;&lt; <span class="string">&quot;Final value of shared_data: &quot;</span> &lt;&lt; shared_data &lt;&lt; std::endl;  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;  </span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>在这个示例中，我们有两个线程<code>t1</code>和<code>t2</code>，它们都调用<code>increment</code>函数来递增共享数据<code>shared_data</code>。通过使用<code>std::lock_guard</code>，我们确保每次只有一个线程可以修改<code>shared_data</code>，从而避免了竞态条件。</p>
+<p><code>std::lock_guard</code>是线程安全的，并且它提供了一种异常安全的方式来管理锁，因为它保证在发生异常时锁也会被释放。这使得它成为保护共享资源访问的一个很好的选择。</p>
+]]></content>
+      <categories>
+        <category>C/C++</category>
+      </categories>
+      <tags>
+        <tag>C/C++基础</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>又又又开户了</title>
+    <url>/2024/10/07/%E5%8F%88%E5%8F%88%E5%8F%88%E5%BC%80%E6%88%B7%E4%BA%86/</url>
+    <content><![CDATA[<h1 id="又又又开户了"><a href="#又又又开户了" class="headerlink" title="又又又开户了"></a>又又又开户了</h1><p>多年前的韭菜，现在又重新开户了，我胡汉三又回来了(^o^)&#x2F;</p>
+]]></content>
+      <categories>
+        <category>生活杂谈</category>
+      </categories>
+      <tags>
+        <tag>股票</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>广播日志分析</title>
+    <url>/2024/09/30/%E5%B9%BF%E6%92%AD%E6%97%A5%E5%BF%97%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<h1 id="广播日志分析"><a href="#广播日志分析" class="headerlink" title="广播日志分析"></a>广播日志分析</h1><p>行 486404: S07E41A 05-29 14:13:04.516 965 965 V BroadcastQueue: Enqueuing BroadcastRecord{e6067ba android.intent.action.SCREEN_OFF&#x2F;u-1} from uid 1000 pid 965 for 57 receivers</p>
+<p>这里的57 receivers代表是什么东西？</p>
+<p>这是Android操作系统中的一个日志条目，它描述了一个名为<code>BroadcastRecord</code>的对象的状态。下面是对这个日志条目的解释：</p>
+<ul>
+<li><code>Enqueuing</code>: 这个词意味着一个事件被放入了队列中，等待处理。</li>
+<li><code>BroadcastRecord</code>: 这是一个Android中用于广播事件的类。当应用程序发送一个广播，系统会创建一个<code>BroadcastRecord</code>对象来处理这个广播。</li>
+<li><code>&#123;e6067ba android.intent.action.SCREEN_OFF/u-1&#125;</code>: 这部分是<code>BroadcastRecord</code>对象的详细信息。<ul>
+<li><code>e6067ba</code>: 这可能是一个对象的内存地址或者是一个唯一标识符。</li>
+<li><code>android.intent.action.SCREEN_OFF</code>: 这是一个特定的动作，表示屏幕关闭的事件。当用户关闭屏幕时，系统会发送这个广播。</li>
+<li><code>/u-1</code>: 这可能指的是用户ID为-1，通常表示这是一个系统级别的广播。</li>
+</ul>
+</li>
+<li><code>from uid 1000 pid 965</code>: 这表示广播是由用户ID为1000，进程ID为965的应用程序或服务发送的。</li>
+<li><code>for 57 receivers</code>: 这意味着有57个接收器（receivers）注册了对这个特定广播的监听，并将接收这个事件。</li>
+</ul>
+<p>总的来说，这条日志记录了系统在处理一个屏幕关闭事件的广播，该广播是由用户ID为1000，进程ID为965的应用程序或服务发送的，并且有57个接收器将会接收到这个事件。这通常用于调试或监控系统事件。</p>
+<hr>
+<p>Add broadcast &lt;BroadcastRecord{263938f u-1 android.intent.action.SCREEN_OFF}&gt; into [ordered | foreground], pending size 0</p>
+<p>这条日志条目提供了有关Android系统中广播队列状态的信息。下面是对这条日志条目的详细解释：</p>
+<ul>
+<li><p><code>Add broadcast</code>: 这表明一个广播事件被添加到了系统中的广播队列。</p>
+</li>
+<li><p><code>&lt;BroadcastRecord&#123;263938f u-1 android.intent.action.SCREEN_OFF&#125;&gt;</code>: 这是被添加到队列中的广播记录对象的具体信息。</p>
+<ul>
+<li><code>263938f</code>: 这可能是广播记录对象的内存地址或唯一标识符。</li>
+<li><code>u-1</code>: 这通常表示广播是发送给所有用户的，<code>u-1</code>代表用户ID为-1，通常用于系统级别的广播。</li>
+<li><code>android.intent.action.SCREEN_OFF</code>: 这是广播的Action，表明这是一个屏幕关闭的广播，即当设备屏幕关闭时触发。</li>
+</ul>
+</li>
+<li><p><code>into [ordered | foreground]</code>: 这部分说明了广播被添加到队列的方式。</p>
+<ul>
+<li><code>ordered</code>: 表示广播是有序的，即它们将按照接收器注册的顺序被处理。<ul>
+<li><code>foreground</code>: 表示广播是前台广播，这意味着它将在前台进程中被处理，通常具有更高的优先级。</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p><code>pending size 0</code>: 这表示当前没有待处理的广播。<code>pending</code>指的是等待被处理的广播数量，<code>size 0</code>意味着队列中没有其他广播等待处理，当前添加的广播将是下一个被处理的。</p>
+</li>
+</ul>
+<p>综上所述，这条日志条目表明一个屏幕关闭的广播事件被添加到了一个有序且前台的广播队列中，并且当前没有其他广播在队列中等待处理。这通常用于调试或监控广播事件的处理情况。</p>
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>Android</tag>
+        <tag>技术点</tag>
       </tags>
   </entry>
   <entry>
